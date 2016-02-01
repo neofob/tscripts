@@ -1,0 +1,50 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:		zram
+# Required-Start:	$local_fs
+# Required-Stop:	$local_fs
+# Default-Start:	S
+# Default-Stop:		0 1 6
+# Short-Description:	Use compressed RAM as in-memory swap
+# Description:		Use compressed RAM as in-memory swap
+### END INIT INFO
+
+# Author: Antonio Galea <antonio.galea@gmail.com>
+# Thanks to Przemysław Tomczyk for suggesting swapoff parallelization
+# Replace the perl inline script with normal unix shell stuff from
+# Adam Conrad <adconrad@canonical.com>
+#
+# Modified to use max_comp_streams for kernel 3.15 and later.
+# Tuan T. Pham <tuan@vt.edu>
+# Installation:
+# # cp zram /etc/init.d
+# # update-rc.d zram defaults
+# # update-rc.d zram enable
+
+FRACTION=75
+
+# Get the available memory in KB
+MEMORY=`grep MemTotal /proc/meminfo | awk '{print $2}'`
+CPUS=`grep -c processor /proc/cpuinfo`
+SIZE=$(((MEMORY * FRACTION / 100)))
+
+case "$1" in
+	"start")
+		modprobe zram num_devices=1
+		echo $CPUS > /sys/block/zram0/max_comp_streams
+		echo "$SIZE"K > /sys/block/zram0/disksize
+		mkswap /dev/zram0
+		swapon /dev/zram0 -p 10
+		;;
+	"stop")
+		swapoff /dev/zram0 && echo "disabled zram disk" &
+		wait
+		sleep .5
+		modprobe -r zram
+		;;
+	*)
+		echo "Usage: `basename $0` (start | stop)"
+		exit 1
+		;;
+esac
