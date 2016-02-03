@@ -1,0 +1,44 @@
+/* my tentative stylesheet to display text from htmlizer.pl ~neofob */
+body {
+/* use the first ligature and the second available swash character set */
+-moz-font-feature-settings: "dlig" 1, "liga" 1, "kern" 1;
+-moz-text-rendering: optimizeLegibility;
+color: #FFFFFF;
+background-color: #000000;
+}
+
+p.firstLetter:first-letter {
+  font-size: xx-large;
+  font-weight: bold;
+  text-float: left;
+}
+
+p:first-of-type:first-letter {
+  font-size: 60px;
+  float: left;
+  margin: 0 0;
+  line-height: 0.8;
+}
+
+p:not(:first-of-type){
+  text-indent: 25px;
+  text-align: justify;
+}
+
+p:first-of-type:first-line {
+  font-variant: small-caps;
+  text-align: justify;
+  text-indent: 0em;
+  float: left;
+}
+p:first-of-type{
+  text-align: justify;
+}
+
+A {
+  text-decoration: none;
+}
+
+font.smcp {
+  font-variant: small-caps;
+}
