@@ -1,0 +1,1 @@
+putty -serial -geometry 120x120+0 -sercfg 115200,8,n,1 /dev/ttyUSB$1 &

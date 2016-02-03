@@ -1,0 +1,10 @@
+#!/bin/bash
+# This computes the Pixel Per Inch of a screen, diagonally
+# Example: a screen of 1920x1080 with 15.6" diagonal
+# $ ./ppi 1920 1080 15.6
+if [ "$1" ] && [ "$2" ] && [ "$3" ]; then
+	echo "sqrt($1^2+$2^2)/$3" | bc -l
+else
+	echo 0
+	exit 1
+fi
