@@ -17,7 +17,7 @@ DRY_RUN=${DRY_RUN:=1}
 function exec_cmd
 {
         if [ $DRY_RUN = 0 ]; then
-                $@
+                eval $@
         else
                 echo "Dry-run, executing..."
                 echo "$@"
