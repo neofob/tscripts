@@ -82,7 +82,7 @@ function mount_dev
 # sync_mount src dest
 function sync_mount
 {
-	time rsync -av $1 $2
+	time rsync -av $1/ $2/
 }
 
 # see https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
