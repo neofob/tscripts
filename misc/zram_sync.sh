@@ -128,7 +128,10 @@ function wrap_color()
 function help_msg
 {
 	echo "$(wrap_color red "Usage:") $0"
-	echo -e "\t$(wrap_color yellow "[--help|-h]:") Help message"
+	echo -e "\t$0 creates a compressed ram disk device, zram, formats it"\
+		"in ext4"
+	echo -e "\tmounts it, rsync it with your source"
+	echo -e "\t$(wrap_color yellow "[--help|-h]:") This help message"
 	echo
 	echo -e "$(wrap_color yellow "Environment Variables:")"
 
