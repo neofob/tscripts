@@ -55,7 +55,7 @@ function load_mod
 function create_zram
 {
 	echo "Enter create_zram"
-	[ -b $1 ] || (echo "Device $1 does not exist"; exit 1)
+	[ -b "$1" ] || (echo "Device $1 does not exist"; exit 1)
 	echo "$2" | grep -o "[0-9]\+[KMG$]\?$" >/dev/null
 	if [ "$?" -eq 1 ]; then
 		echo "SIZE must be a number of bytes or human-readable format"
@@ -82,6 +82,7 @@ function mount_dev
 # sync_mount src dest
 function sync_mount
 {
+	echo "rsync...data from $1 to $2"
 	time rsync -av $1/ $2/
 }
 
