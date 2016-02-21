@@ -39,6 +39,14 @@ function var_dump()
 	echo "FORMAT=$FORMAT"
 }
 
+function exec_cmd
+{
+	if [ "$DRY_RUN" = 0 ]; then
+		eval $@
+	else
+		echo "$@"
+	fi
+}
 
 function print_help()
 {
@@ -48,9 +56,16 @@ function print_help()
 	echo -e "Examples:"
 	echo -e "\t1) Create a new fs on /dev/sdc1 and copy all data from /opt/photos to it"
 	echo -e "\t\t$ $0 -f -s /opt/photos -d /dev/sdc1"
+	echo -e "\t/dev/sdc1 is mounted on default /tmp/dest"
+	echo -e "\t/opt/photos is copied to /tmp/dest"
 	echo
 	echo -e "\t2) Sync up data to an existing partition"
 	echo -e "\t\t$ $0 -s /opt/photos -d /dev/sdc1"
+	echo
+	echo -e "\t3) This help message"
+	echo -e "\t\t$ $0 -h"
+	echo
+	echo "__author__: tuan t. pham"
 }
 
 function parse_opts()
@@ -92,31 +107,30 @@ function parse_opts()
 				;;
 		esac
 	done
-	}
+}
 
 function process_var()
 {
 	if [ "$DRY_RUN" = 1 ]; then
 		echo "Dry-run...commands would be executed"
-		if [ "$FORMAT" = 1 ]; then
-			echo "$MKFS $LABEL $DEV"
-		fi
-		echo "mkdir -p $MNT"
-		echo "$MNT_CMD $DEV $MNT"
-		echo "$SYNC_CMD $SRC/ $MNT/"
 	else
-		if [ "$FORMAT" = 1 ]; then
-			echo "Creating ext4 fs..."
-			eval "$MKFS $LABEL $DEV"
-		fi
-
-		echo
-		echo "Mounting $DEV on $MNT"
-		[ ! -d "$MNT" ] || mkdir -p $MNT
-		eval "$MNT_CMD $DEV $MNT"
-		echo "Copy data from $SRC to $MNT"
-		eval "$SYNC_CMD $SRC/ $MNT/"
+		echo "Executing..."
 	fi
+	echo
+
+	if [ "$FORMAT" = 1 ]; then
+		log "Creating ext4 fs..."
+		exec_cmd "$MKFS $LABEL $DEV"
+		echo
+		SYNC_CMD='cp -rp'
+	fi
+	[ ! -d "$MNT" ] || exec_cmd "mkdir -p $MNT"
+	echo
+	log "Mounting $DEV on $MNT"
+	exec_cmd "$MNT_CMD $DEV $MNT"
+	echo
+	log "Copy data from $SRC to $MNT/"
+	exec_cmd "$SYNC_CMD $SRC $MNT/"
 }
 
 function main()
