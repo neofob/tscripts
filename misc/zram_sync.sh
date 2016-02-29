@@ -9,16 +9,25 @@
 
 DEBUG=${DEBUG:=0}
 CPUS=${CPUS:=`grep -c processor /proc/cpuinfo`}
+MKFS_CMD=${MKFS_CMD:="mkfs.ext4 -m 0 -L"}
 ZRAM_LABEL=${ZRAM_LABEL:=FastDisk}
 USER=${USER:=`whoami`}
 MAX_DEV=${MAX_DEV:=4}
 MEM=`grep MemTotal /proc/meminfo | awk '{print $2}'`
 MNT_PREFIX="/tmp"
 
+function log()
+{
+	if [ "$DEBUG" = 1 ]; then
+		echo "$@"
+	fi
+}
+
 if [ ! "$SIZE" ]; then
 	# snippet from init.d/zram
 	# Get the available memory in KB
 	SIZE=$(((MEM * 50 / 100)))
+	log "SIZE=$SIZE(K)"
 fi
 
 # Load the zram module if it is not loaded alread
@@ -54,7 +63,7 @@ function load_mod
 # size can be in bytes or human-readable format: Number[KMG]?
 function create_zram
 {
-	echo "Enter create_zram"
+	log "Enter create_zram"
 	[ -b "$1" ] || (echo "Device $1 does not exist"; exit 1)
 	echo "$2" | grep -o "[0-9]\+[KMG$]\?$" >/dev/null
 	if [ "$?" -eq 1 ]; then
@@ -68,13 +77,14 @@ function create_zram
 	DEV_NAME=`echo $1 | grep -o "zram.$"`
 	echo $CPUS | sudo tee /sys/block/$DEV_NAME/max_comp_streams >/dev/null
 	echo $2 | sudo tee /sys/block/$DEV_NAME/disksize >/dev/null
-	time sudo mkfs.ext4 -m 0 -L $ZRAM_LABEL $1
+	time sudo $MKFS_CMD $ZRAM_LABEL $1
 }
 
 # Mount a device on a mount point
 # Ex: mount_dev /dev/zram0 /tmp/zram0
 function mount_dev
 {
+	log "Mounting $1 on $2"
 	sudo mount $1 $2
 	sudo chown $USER:$USER $2
 }
@@ -82,7 +92,7 @@ function mount_dev
 # sync_mount src dest
 function sync_mount
 {
-	echo "rsync...data from $1 to $2"
+	log "rsync...data from $1 to $2"
 	time rsync -av $1/ $2/
 }
 
@@ -152,16 +162,31 @@ function help_msg
 	echo -e "\t\tDEFAULT MNT=/tmp/zram0"
 
 	echo -e "\t$(wrap_color red "SRC")\tSource directory to be rsync'ed"
-	echo -e "\t\tDEFAULT SRC=You need to specify this"
+	echo -e "\t\tDEFAULT SRC is undefined;"
 	echo
+
+	echo -e "\t$(wrap_color red "MKFS_CMD")\tFilesytem command with arguments: LABEL BLOCKDEV"
+	echo -e "\t\tDEFAULT MKFS_CMD=mkfs.ext4 -m 0 -L"
+	echo
+
 	echo -e "$(wrap_color yellow Examples:)"
 	echo -e "\t1) zram module is loaded, zram0 is used for swap"
 	echo -e "\tSo we use zram1 to store data from /media/$(whoami)/usb_drive"
 	echo -e "\t\t\$ ZRAM=/dev/zram1 SRC=/media/$(whoami)/usb_drive $0"
 	echo
+
 	echo -e "\t2) Specify mount point and others, let the script find the next available zram device"
 	echo -e "\t\t\$ CPUS=2 SIZE=4G MNT=/opt/FastDisk SRC=/media/$(whoami)/data $0"
 	echo
+
+	echo -e "\t3) Just create zram and format it, use default mount point (/tmp/zramN)"
+	echo -e "\t\t\$ SIZE=16G $0"
+	echo
+
+	echo -e "\t4) Just create zram and format it, use default mount point (/tmp/zramN) with specied cmd"
+	echo -e "\t\t\$ SIZE=16G MKFS_CMD=\"mkfs.ext4 -m -O 64bit -L\" $0"
+	echo
+
 	echo -e "__author__: tuan t. pham"
 }
 
@@ -180,14 +205,15 @@ function var_dump
 
 function main
 {
-	echo "Entering main function"
-	[ "$DEBUG" = 1 ] && var_dump
+	log "Entering main function"
 	[ ! "$ZRAM" ] && load_mod
 	create_zram $ZRAM $SIZE
 	[ -d "$MNT" ] || mkdir -p $MNT
 	mount_dev $ZRAM $MNT
-	sync_mount $SRC $MNT
+	[ -d "$SRC" ] && sync_mount $SRC $MNT
 }
+
+[ "$DEBUG" = 1 ] && var_dump
 
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
 	help_msg
