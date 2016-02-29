@@ -184,7 +184,7 @@ function help_msg
 	echo
 
 	echo -e "\t4) Just create zram and format it, use default mount point (/tmp/zramN) with specied cmd"
-	echo -e "\t\t\$ SIZE=16G MKFS_CMD=\"mkfs.ext4 -m -O 64bit -L\" $0"
+	echo -e "\t\t\$ SIZE=16G MKFS_CMD=\"mkfs.ext4 -m 0 -O 64bit -L\" $0"
 	echo
 
 	echo -e "__author__: tuan t. pham"
