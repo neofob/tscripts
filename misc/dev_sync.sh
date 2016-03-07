@@ -53,6 +53,16 @@ function print_help()
 	echo "Usage: $0 [-f|-L LABEL] <-s SRC> [-m MOUNT_POINT] <-d DEV>"
 	echo -e "\tCopy your aging data to a [new] filesystem"
 	echo
+	echo -e "\t-f: format the block device; default is not"
+	echo
+	echo -e "\t-L LABEL: The label of the drive; default is \"$LABEL\""
+	echo
+	echo -e "\t-s SRC: source directory; default is $SRC"
+	echo
+	echo -e "\t-m MOUNT_POINT: mount point of block device; default is $MNT"
+	echo
+	echo -e "\t-d DEV: block device; default is $DEV"
+	echo
 	echo -e "Examples:"
 	echo -e "\t1) Create a new fs on /dev/sdc1 and copy all data from /opt/photos to it"
 	echo -e "\t\t$ $0 -f -s /opt/photos -d /dev/sdc1"
