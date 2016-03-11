@@ -1,6 +1,7 @@
 Frequent Used Scripts
 =====================
 
+  * `blkdev`: block device scripts
   * `docker`: docker-related scripts
   * `init.d`: scripts in bootup
   * `misc`: random stuff
