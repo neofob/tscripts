@@ -145,8 +145,14 @@ function process_var()
 
 function main()
 {
-	parse_opts "$@"
-	process_var
+	if [ $# -eq 0 ]; then
+		echo "Running with default settings"
+		var_dump
+		process_var
+	else
+		parse_opts "$@"
+		process_var
+	fi
 }
 
 main "$@"
