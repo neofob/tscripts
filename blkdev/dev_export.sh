@@ -57,7 +57,7 @@ function parse_opts()
 				;;
 			d)
 				log "Setting block device $OPTARG"
-				DEV=$$OPTARG
+				DEV=$OPTARG
 				;;
 			c)
 				log "Setting number of cpus $OPTARG"
