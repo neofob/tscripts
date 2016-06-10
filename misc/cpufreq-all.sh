@@ -10,7 +10,7 @@ help_msg="\e[1;31mUsage:\e[0m $0 <governor>
 		ondemand, performance, conservative, powersave, userspace
 
 	For a list of available governors,
-		$ grep CONFIG_CPU_FREQ_GOV /boot/config-`uname -r`
+		$ cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors
 
 \e[1;31mExample:\e[0m
 	0) Set all cpus to 'powersave'
