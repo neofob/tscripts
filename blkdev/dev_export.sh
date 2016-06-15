@@ -70,10 +70,11 @@ function parse_opts()
 			h)
 				log "Setting -h option"
 				help_msg
+				exit 0
 				;;
 			\?)
-				echo "Invalid option(s)
-				help_msg"
+				echo "Invalid option(s)"
+				help_msg
 				exit 1
 				;;
 		esac
