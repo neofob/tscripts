@@ -86,28 +86,28 @@ function help_msg()
 	echo -e "$(wrap_color yellow "Options:")"
 	echo -e "\t-h This help message"
 	echo
-	echo -e "\t-l <DIR> Load images from DIR"
-	echo -e "\t   Must specify the directory"
+	echo -e "\t-l <DIR>"
+	echo -e "\t\tLoad images from DIR"
+	echo -e "\t\tMust specify the directory"
 	echo -e "\tOR just run something like this"
-	echo -e "\t for i in \`ls *.xz\`; do xzcat \$i | docker load; done"
+	echo -e "\t\tfor i in \`ls *.xz\`; do xzcat \$i | docker load; done"
 	echo
-	echo -e "\t-o Output directory for saved docker images"
-	echo -e "\t   DEFAULT is the current working directory"
+	echo -e "\t-o <DIR>"
+	echo -e "\t\tOutput directory for saved docker images"
+	echo -e "\t\tDEFAULT is the current working directory"
 	echo
-	echo -e "\t-n Number of cpu core to be used for compression"
-	echo -e "\t   DEFAULT is the number of available cores, `grep -c processor /proc/cpuinfo`"
+	echo -e "\t-n <N>"
+	echo -e "\t\tNumber of cpu core to be used for compression"
+	echo -e "\t\tDEFAULT is the number of available cores, `grep -c processor /proc/cpuinfo`"
 	echo
-	echo -e "\t-c Compression level"
-	echo -e "\t   DEFAULT is 6, 0 is MIN, 9 is MAX"
+	echo -e "\t-c <N>"
+	echo -e "\t\tCompression level"
+	echo -e "\t\tDEFAULT=6; MIN=0, MAX=9"
 	echo
 	echo -e "$(wrap_color yellow "Environment Variables:")"
 	echo -e "\t$(wrap_color red "IMG") List of docker images to be saved"
 	echo -e "\t   DEFAULT is the list of images from docker images"
 	echo
-#	echo -e "\t$(wrap_color red "CPUS") Number of CPUs to be used"
-#	echo -e "\t\tDEFAULT CPUS=\`grep -c processor /proc/cpuinfo\`"
-#	echo -e "\t$(wrap_color red "OUTDIR") Output directory"
-#	echo -e "\t\tDEFAULT OUTPUT=."
 	echo -e "\t$(wrap_color red "COMPRESSOR") Compressor command line; take STDIN and output to STDOUT"
 	echo -e "\t\tDEFAULT COMPRESSOR=\"pxz -T$CPUS -c - \""
 	echo
@@ -118,16 +118,16 @@ function help_msg()
 	echo -e "\t\tDefault FILTER=\"grep -vi \"^<None>\""
 	echo
 	echo -e "$(wrap_color yellow Examples:)"
-	echo -e "\t1) Save all current docker images except the <None> ones"
+	echo -e "\t1) Save all current docker images except the <None> ones to current working directory"
 	echo -e "\t\t\$ $0"
 	echo
 	echo -e "\t2) Save one container"
 	echo -e "\t\t\$ IMG=debian:jessie $0"
 	echo
-	echo -e "\t3) Use 4 cpu cores for pxz (default)"
-	echo -e "\t\t\$ CPUS=4 $0"
+	echo -e "\t3) Use 4 cpu cores for pxz (default), output to 'images' directory, maximum compression level"
+	echo -e "\t\t\$ $0 -n 4 -o images -c 9"
 	echo
-	echo -e "__author__: tuan t. pham"
+	echo -e "__author__: tuan t. pham <tuan at vt dot edu>"
 }
 
 function set_compressor()
@@ -205,6 +205,7 @@ function parse_opts()
 			o)
 				log "Setting the OUTDIR to $OPTARG"
 				OUTDIR=$OPTARG
+				[ -d "$OUTDIR" ] || mkdir -p $OUTDIR
 				;;
 			n)
 				log "Setting the number of cpus to $OPTARG"
