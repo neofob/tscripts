@@ -30,7 +30,7 @@ CPUS=${CPUS:=`grep processor /proc/cpuinfo | awk '{print $3}'`}
 
 function main()
 {
-	if [ -z $1 ]; then
+	if [ -z $1 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 		print_help
 		exit 1
 	fi
