@@ -47,14 +47,14 @@ function help_msg
 function mount_nbd
 {
 	echo "Entering mount_nbd $1 $2"
-	eval $NBD_CMD_C $1 $2
+	eval "$NBD_CMD_C $1 $2"
 }
 
 # e.g.: umount_nbd /dev/nbd0
 function umount_nbd
 {
 	echo "Entering umount_nbd $1"
-	eval $NBD_CMD_D $1
+	eval "$NBD_CMD_D $1"
 }
 
 # e.g.: zerofree_func /dev/nbd0p1
@@ -69,13 +69,13 @@ function main
 	echo "Entering main function"
 	mount_nbd "$NBD_DEV $1"
 	zerofree_func "$NBD_DEV""p$VPART"
-	umount_nbd $NBD_DEV
+	umount_nbd "$NBD_DEV"
 }
 
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
 	help_msg
 	exit 0
-elif [ ! -f $1 ]; then
+elif [ ! -f "$1" ]; then
 	echo "$1 does not exist"
 	echo
 	help_msg

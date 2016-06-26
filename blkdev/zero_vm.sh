@@ -14,11 +14,13 @@
 # df | grep "^/dev" | awk '{print $1}' | DRY_RUN=0 ./zero_vm.sh
 DRY_RUN=${DRY_RUN:=1}
 
+set -e
+
 function exec_cmd
 {
-	if [ $DRY_RUN = 0 ]; then
+	if [ "$DRY_RUN" = 0 ]; then
 		echo "Executing..."
-		eval $@
+		eval "$@"
 	else
 		echo "Dry-run, executing..."
 		echo "$@"

@@ -13,14 +13,14 @@ OPTS=":zd:c:o:h"
 
 DEBUG=${DEBUG:=0}
 DEV=""
-CPUS=${CPUS:=`grep -c processor /proc/cpuinfo`}
+CPUS=${CPUS:=$(grep -c processor /proc/cpuinfo)}
 OUT_IMG=disk.img.xz
 ZF=${ZF:=0}
 
 function log()
 {
 	if [ "$DEBUG" = 1 ]; then
-		eval "echo $@"
+		eval echo "$@"
 	fi
 }
 
@@ -98,8 +98,8 @@ function main()
 	if [ $# -eq 0 ]; then
 		help_msg
 	else
-		parse_opts $@
+		parse_opts "$@"
 	fi
 }
 
-main $@
+main "$@"

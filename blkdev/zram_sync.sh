@@ -8,12 +8,12 @@
 # __author__: tuan t. pham <tuan at vt dot edu>
 
 DEBUG=${DEBUG:=0}
-CPUS=${CPUS:=`grep -c processor /proc/cpuinfo`}
+CPUS=${CPUS:=$(grep -c processor /proc/cpuinfo)}
 MKFS_CMD=${MKFS_CMD:="mkfs.ext4 -m 0 -L"}
 ZRAM_LABEL=${ZRAM_LABEL:=FastDisk}
-USER=${USER:=`whoami`}
+USER=${USER:=$(whoami)}
 MAX_DEV=${MAX_DEV:=4}
-MEM=`grep MemTotal /proc/meminfo | awk '{print $2}'`
+MEM=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 MNT_PREFIX="/tmp"
 
 function log()
@@ -43,10 +43,10 @@ function load_mod
 		ZRAM=/dev/zram0
 	else
 		# We need to check for an available zram device
-		ZRAM_DEV=`ls /dev/zram*`
+		ZRAM_DEV=$(ls /dev/zram*)
 		for z in $ZRAM_DEV; do
-			DEV_NAME=`echo $z | grep -o "zram.$"`
-			DEV_SIZE=`cat /sys/block/$DEV_NAME/disksize`
+			DEV_NAME=$(echo $z | grep -o "zram.$")
+			DEV_SIZE=$(cat /sys/block/$DEV_NAME/disksize)
 			# find an available zram device
 			if [ "$DEV_SIZE" -eq 0 ]; then
 				ZRAM=$z
@@ -74,7 +74,7 @@ function create_zram
 		echo "$2" | grep --color=always -o "[0-9]\+[KMG$]\?"
 		exit 1
 	fi
-	DEV_NAME=`echo $1 | grep -o "zram.$"`
+	DEV_NAME=$(echo $1 | grep -o "zram.$")
 	echo $CPUS | sudo tee /sys/block/$DEV_NAME/max_comp_streams >/dev/null
 	echo $2 | sudo tee /sys/block/$DEV_NAME/disksize >/dev/null
 	time sudo $MKFS_CMD $ZRAM_LABEL $1
@@ -192,7 +192,7 @@ function help_msg
 
 function var_dump
 {
-	VAR_LIST=`grep -o "^[A-Z_]\+" $0`
+	VAR_LIST=$(grep -o "^[A-Z_]\+" $0)
 	echo $VAR_LIST
 	for v in $VAR_LIST; do
 		eval "echo $v=\$$v"

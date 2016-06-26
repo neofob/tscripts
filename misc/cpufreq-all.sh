@@ -26,7 +26,7 @@ function print_help()
 	exec echo -e "$help_msg"
 }
 
-CPUS=${CPUS:=`grep processor /proc/cpuinfo | awk '{print $3}'`}
+CPUS=${CPUS:=$(grep processor /proc/cpuinfo | awk '{print $3}')}
 
 function main()
 {

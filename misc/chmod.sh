@@ -17,14 +17,14 @@ DRY_RUN=${DRY_RUN:=1}
 function exec_cmd
 {
         if [ $DRY_RUN = 0 ]; then
-                eval $@
+                eval "$@"
         else
                 echo "Dry-run, executing..."
                 echo "$@"
         fi
 }
 
-for file in $@; do
+for file in "$@"; do
 	if [ -d "$file" ]; then
 		(
 		exec_cmd "chmod 755 $file"

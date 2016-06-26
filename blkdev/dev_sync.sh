@@ -14,7 +14,7 @@
 DEBUG=${DEBUG:=0}
 DRY_RUN=${DRY_RUN:=0}
 MNT=${MNT:="/tmp/dest"}
-SRC=${SRC:="/media/`whoami`/Backup"}
+SRC=${SRC:="/media/$(whoami)/Backup"}
 DEV=${DEV:="/dev/sdc1"}
 SYNC_CMD=${SYNC_CMD:="rsync -av --delete"}
 MKFS=${MKFS:="mkfs.ext4 -F -m 0 -L"}
@@ -25,13 +25,13 @@ OPTS=":fL:s:m:d:h"
 function log()
 {
 	if [ "$DEBUG" = 1 ]; then
-		eval "echo $@"
+		eval echo "$@"
 	fi
 }
 
 function var_dump()
 {
-	VAR_LIST=`grep -o "^[A-Z_]\+" $0`
+	VAR_LIST=$(grep -o "^[A-Z_]\+" $0)
 	echo $VAR_LIST
 	for v in $VAR_LIST; do
 		eval "echo $v=\$$v"
@@ -42,7 +42,7 @@ function var_dump()
 function exec_cmd
 {
 	if [ "$DRY_RUN" = 0 ]; then
-		eval $@
+		eval "$@"
 	else
 		echo "$@"
 	fi

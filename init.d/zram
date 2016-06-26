@@ -25,8 +25,8 @@
 FRACTION=75
 
 # Get the available memory in KB
-MEMORY=`grep MemTotal /proc/meminfo | awk '{print $2}'`
-CPUS=`grep -c processor /proc/cpuinfo`
+MEMORY=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+CPUS=$(grep -c processor /proc/cpuinfo)
 SIZE=$(((MEMORY * FRACTION / 100)))
 
 case "$1" in
@@ -44,7 +44,7 @@ case "$1" in
 		modprobe -r zram
 		;;
 	*)
-		echo "Usage: `basename $0` (start | stop)"
+		echo "Usage: $(basename $0) (start | stop)"
 		exit 1
 		;;
 esac
