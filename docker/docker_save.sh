@@ -64,7 +64,7 @@ function wrap_color()
 function log()
 {
 	if [ "$DEBUG" = 1 ]; then
-		eval "echo $@"
+		eval "echo $*"
 	fi
 }
 
@@ -98,18 +98,18 @@ function help_msg()
 	echo
 	echo -e "\t-n <N>"
 	echo -e "\t\tNumber of cpu core to be used for compression"
-	echo -e "\t\tDEFAULT is the number of available cores, `grep -c processor /proc/cpuinfo`"
+	echo -e "\t\tDEFAULT is the number of available cores, $(grep -c processor /proc/cpuinfo)"
 	echo
 	echo -e "\t-c <N>"
 	echo -e "\t\tCompression level"
-	echo -e "\t\tDEFAULT=6; MIN=0, MAX=9"
+	echo -e "\t\tDEFAULT=$COMPRESS_LEVEL; MIN=0, MAX=9"
 	echo
 	echo -e "$(wrap_color yellow "Environment Variables:")"
 	echo -e "\t$(wrap_color red "IMG") List of docker images to be saved"
 	echo -e "\t   DEFAULT is the list of images from docker images"
 	echo
 	echo -e "\t$(wrap_color red "COMPRESSOR") Compressor command line; take STDIN and output to STDOUT"
-	echo -e "\t\tDEFAULT COMPRESSOR=\"pxz -T$CPUS -c - \""
+	echo -e "\t\tDEFAULT COMPRESSOR=\"pxz -T$CPUS -c$COMPRESS_LEVEL - \""
 	echo
 	echo -e "\t$(wrap_color red "COMP_EXT") The file extension if the above variable is set"
 	echo -e "\t\tDEFAULT COMP_EXT=xz"
@@ -125,7 +125,10 @@ function help_msg()
 	echo -e "\t\t\$ IMG=debian:jessie $0"
 	echo
 	echo -e "\t3) Use 4 cpu cores for pxz (default), output to 'images' directory, maximum compression level"
-	echo -e "\t\t\$ $0 -n 4 -o images -c 9"
+	echo -e "\t\t\$ $0 -n 4 -o docker_images -c 9"
+	echo
+	echo -e "\t4) Load docker images from a directory"
+	echo -e "\t\t\$ $0 -l docker_images"
 	echo
 	echo -e "__author__: tuan t. pham <tuan at vt dot edu>"
 }
@@ -160,15 +163,15 @@ function set_compressor()
 function get_img()
 {
 	if [ ! "$IMG" ]; then
-		IMG=`eval $IMG_CMD`
+		IMG=$(eval "$IMG_CMD")
 	fi
 }
 
 # load_images DIR
 function load_images()
 {
-	if [ -d $1 ]; then
-		for d in `ls $1/*.tar.xz`; do
+	if [ -d "$1" ]; then
+		for d in $(ls "$1"/*.tar.xz); do
 			xzcat $d | docker load
 		done
 	else
@@ -181,16 +184,16 @@ function docker_save()
 	set_compressor
 	echo "Compressor Command = '$COMPRESSOR'"
 	get_img
-	echo -e "Saving image(s):\n$IMG"
+	echo -e "Saving $(echo "$IMG" | wc -l) image(s):\n$IMG"
 
 	for i in $IMG
 	do
 		echo -e "\nSaving docker image '$i'"
-		OUTFILE=`echo $i | sed -e 's/\//_/g' | sed -e 's/:/_/'`
+		OUTFILE=$(echo $i | sed -e 's/\//_/g' | sed -e 's/:/_/')
 		CMD="docker save \$i | \$COMPRESSOR > \$OUTDIR/\$OUTFILE.tar.$COMP_EXT"
 		echo "Output file = '$OUTDIR/$OUTFILE.tar.$COMP_EXT'"
 		# echo $CMD
-		eval $CMD
+		eval "$CMD"
 	done
 }
 
@@ -203,7 +206,7 @@ function parse_opts()
 				LOAD_DIR=$OPTARG
 				;;
 			o)
-				log "Setting the OUTDIR to $OPTARG"
+				log "Setting the OUTDIR to \'$OPTARG\'"
 				OUTDIR=$OPTARG
 				[ -d "$OUTDIR" ] || mkdir -p $OUTDIR
 				;;
@@ -236,11 +239,11 @@ function main()
 		exit 0
 	fi
 
-	parse_opts $@
+	parse_opts "$@"
 
 	[ "$LOAD_DIR" ] && load_images $LOAD_DIR && exit 0
 	[ "$DEBUG" = 1 ] && dump_vars
 	docker_save
 }
 
-main $@
+main "$@"
