@@ -17,6 +17,36 @@ CPUS=${CPUS:=$(grep -c processor /proc/cpuinfo)}
 OUT_IMG=disk.img.xz
 ZF=${ZF:=0}
 
+help_msg="\e[1;31mUsage:\e[0m $0 [-h] [-z] <-d BLOCK_DEV> [-c CPUS] <-o OutputDiskImage.img.xz>
+
+Zerofree a block device, compress it to an output file
+
+	-h This help message
+
+	-z Enable zerofree to run before dd
+	   DEFAULT: not set
+
+	-d Block device source; e.g, /dev/sda, /dev/zram1, /dev/loop0
+
+	-c Number of cpu cores to be used for compression
+	   DEFAULT: number of cpu cores in the system
+
+	-o Output file name
+	  DEFAULT: $OUT_IMG
+
+\e[1;31mExample(s):\e[0m
+	0) Export /dev/sdb1 to sdb.img.xz (zerofree, use 4 core to compress)
+	$ $0 -z -d /dev/sdb1 -c 4 -o sdb.img.xz
+
+	1) Export /dev/loop0, no zerofree
+	$ $0 -d /dev/loop0 -o disk.img.xz
+
+\e[1;33mOther required tools:\e[0m zerofree, pv, pxz
+
+\e[1;33mNotice:\e[0m This script should be run as \e[1;31mroot\e[0m in order to have access to the block device(s).
+
+__author__: tuan t. pham"
+
 function log()
 {
 	if [ "$DEBUG" = 1 ]; then
@@ -26,25 +56,7 @@ function log()
 
 function help_msg()
 {
-	echo "Usage: $0 [-h] [-z] <-d BLOCK_DEV> [-c CPUS] <-o OutputDiskImage.img.xz>"
-	echo
-	echo -e "Zerofree a block device, compress it to an output file"
-	echo
-	echo -e "\t-h This help message"
-	echo
-	echo -e "\t-z Enable zerofree to run before dd"
-	echo -e "\t   DEFAULT is not set"
-	echo
-	echo -e "\t-d Block device source"
-	echo
-	echo -e "\t-c Number of cpu cores to be used for compression"
-	echo -e "\t   DEFAULT is the number of available cpu cores"
-	echo
-	echo -e "\t-o Output file name"
-	echo
-	echo "Other required tools: zerofree, pv, pxz"
-	echo
-	echo "__author__: tuan t. pham"
+	exec echo -e "$help_msg"
 }
 
 function parse_opts()
@@ -83,10 +95,10 @@ function parse_opts()
 
 function process()
 {
-	[ "$ZF" = 1 ] && sudo zerofree $DEV
+	[ "$ZF" = 1 ] && zerofree $DEV
 
 	if [ -b "$DEV" ]; then
-		sudo dd if=$DEV bs=1M | pv | pxz -T$CPU -c9 - > $OUT_IMG
+		dd if=$DEV bs=1M | pv | pxz -T$CPU -c9 - > $OUT_IMG
 	else
 		echo "$DEV is not a block device"
 		exit 1
