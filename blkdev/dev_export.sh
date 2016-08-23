@@ -95,10 +95,14 @@ function parse_opts()
 
 function process()
 {
-	[ "$ZF" = 1 ] && zerofree $DEV
-
 	if [ -b "$DEV" ]; then
-		dd if=$DEV bs=1M | pv | pxz -T$CPU -c9 - > $OUT_IMG
+		if [ "$ZF" = 1 ]; then
+			echo "Zeroing $DEV"
+			zerofree $DEV
+		fi
+
+		SIZE=$(blockdev --getsize64 $DEV)
+		dd if=$DEV bs=1M | pv -s $SIZE | pxz -T$CPU -c9 - > $OUT_IMG
 	else
 		echo "$DEV is not a block device"
 		exit 1
@@ -111,6 +115,7 @@ function main()
 		help_msg
 	else
 		parse_opts "$@"
+		process
 	fi
 }
 
