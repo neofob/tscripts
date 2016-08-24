@@ -22,6 +22,39 @@ MNT_CMD=${MNT_CMD:="mount -t ext4"}
 LABEL=${LABEL:="Backup"}
 OPTS=":fL:s:m:d:h"
 
+help_msg="\e[1;31mUsage:\e[0m $0 [-f|-L LABEL] <-s SRC> [-m MOUNT_POINT] <-d DEV>
+	Copy your aging data to a [new] filesystem
+
+	-f format the block device
+	   DEFAULT: NO
+
+	-L LABEL: The label of the drive; default is \"$LABEL\"
+
+	-s SRC: source directory
+	   DEFAULT $SRC
+
+	-m MOUNT_POINT mount point of block device
+	   DEFAULT $MNT
+
+	-d DEV block device
+	   DEFAULT $DEV
+
+\e[1;31mExamples:\e[0m
+	0) Create a new fs on /dev/sdc1 and copy all data from /opt/photos to it
+	$ $0 -f -s /opt/photos -d /dev/sdc1
+		/dev/sdc1 is mounted on default /tmp/dest
+		/opt/photos is copied to /tmp/dest
+
+	1) Sync up data to an existing partition
+	$ $0 -s /opt/photos -d /dev/sdc1
+
+	2) This help message
+	$ $0 -h
+
+\e[1;33mNotice:\e[0m run this as root
+
+__author__: tuan t. pham"
+
 function log()
 {
 	if [ "$DEBUG" = 1 ]; then
@@ -39,7 +72,7 @@ function var_dump()
 	echo "FORMAT=$FORMAT"
 }
 
-function exec_cmd
+function exec_cmd()
 {
 	if [ "$DRY_RUN" = 0 ]; then
 		eval "$@"
@@ -50,32 +83,7 @@ function exec_cmd
 
 function print_help()
 {
-	echo "Usage: $0 [-f|-L LABEL] <-s SRC> [-m MOUNT_POINT] <-d DEV>"
-	echo -e "\tCopy your aging data to a [new] filesystem"
-	echo
-	echo -e "\t-f: format the block device; default is not"
-	echo
-	echo -e "\t-L LABEL: The label of the drive; default is \"$LABEL\""
-	echo
-	echo -e "\t-s SRC: source directory; default is $SRC"
-	echo
-	echo -e "\t-m MOUNT_POINT: mount point of block device; default is $MNT"
-	echo
-	echo -e "\t-d DEV: block device; default is $DEV"
-	echo
-	echo -e "Examples:"
-	echo -e "\t1) Create a new fs on /dev/sdc1 and copy all data from /opt/photos to it"
-	echo -e "\t\t$ $0 -f -s /opt/photos -d /dev/sdc1"
-	echo -e "\t/dev/sdc1 is mounted on default /tmp/dest"
-	echo -e "\t/opt/photos is copied to /tmp/dest"
-	echo
-	echo -e "\t2) Sync up data to an existing partition"
-	echo -e "\t\t$ $0 -s /opt/photos -d /dev/sdc1"
-	echo
-	echo -e "\t3) This help message"
-	echo -e "\t\t$ $0 -h"
-	echo
-	echo "__author__: tuan t. pham"
+	exec echo -e "$help_msg"
 }
 
 function parse_opts()
