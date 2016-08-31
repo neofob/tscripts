@@ -1,0 +1,38 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:		e1000
+# Required-Start:	$local_fs
+# Required-Stop:	$local_fs
+# Default-Start:	S
+# Default-Stop:		0 1 6
+# Short-Description:	Reset NIC
+# Description:		Reset NIC
+### END INIT INFO
+
+# Author: jnko @ https://bbs.archlinux.org/viewtopic.php?pid=1575719#p1575719
+# Adapt to init script Tuan T. Pham tuan at vt dot edu
+# Installation:
+# # install e1000 /etc/init.d
+# # update-rc.d e1000 defaults
+# # update-rc.d e1000 enable
+
+case "$1" in
+	"start")
+	# Get the PCI-Address of network card (Caution: This works ONLY with ONE NIC)
+	PCI=$(/usr/bin/lspci | /bin/egrep -i 'ethernet' | /usr/bin/cut -d' ' -f1)
+	PCIPATH=$(/usr/bin/find /sys -name *\${PCI} | /bin/egrep -i *pci0000*)
+
+	# Mark entry into syslog
+	/usr/bin/logger -t "ResetNIC" "Resetting PCI NIC ${PCIPATH}"
+
+	# Reset the PCI Device completely (like Power-ON/Off)
+	echo 1 >${PCIPATH}/reset
+	;;
+	"stop")
+		;;
+	*)
+		echo "Usage: $(basename $0) (start | stop)"
+		exit 1
+		;;
+esac
