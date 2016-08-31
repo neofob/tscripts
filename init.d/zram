@@ -18,7 +18,7 @@
 # Modified to use max_comp_streams for kernel 3.15 and later.
 # Tuan T. Pham <tuan@vt.edu>
 # Installation:
-# # cp zram /etc/init.d
+# # install zram /etc/init.d
 # # update-rc.d zram defaults
 # # update-rc.d zram enable
 
