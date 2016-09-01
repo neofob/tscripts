@@ -21,7 +21,7 @@ case "$1" in
 	"start")
 	# Get the PCI-Address of network card (Caution: This works ONLY with ONE NIC)
 	PCI=$(/usr/bin/lspci | /bin/egrep -i 'ethernet' | /usr/bin/cut -d' ' -f1)
-	PCIPATH=$(/usr/bin/find /sys -name *\${PCI} | /bin/egrep -i *pci0000*)
+	PCIPATH=$(/usr/bin/find /sys -name *${PCI} | /bin/egrep -i *pci0000*)
 
 	# Mark entry into syslog
 	/usr/bin/logger -t "ResetNIC" "Resetting PCI NIC ${PCIPATH}"
