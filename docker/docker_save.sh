@@ -184,7 +184,7 @@ function docker_save()
 	set_compressor
 	echo "Compressor Command = '$COMPRESSOR'"
 	get_img
-	echo -e "Saving $(echo "$IMG" | wc -l) image(s):\n$IMG"
+	echo -e "Saving $(echo "$IMG" | sed -s "s/ /\n/g" | wc -l) image(s):\n$IMG"
 
 	for i in $IMG
 	do
