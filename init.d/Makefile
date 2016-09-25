@@ -2,7 +2,7 @@
 #
 all: install
 
-SRC=e1000 zram
+SRC?=e1000 zram
 
 help:
 	@echo "\033[1;31mAvailable targets:\033[0m"
