@@ -69,7 +69,7 @@ function build_kernel()
 {
 	make -s -j$CPUS
 	make -s -j$CPUS bindeb-pkg
-	cp $BUILD_OUTPUT/../*.deb $ARTIFACT
+	cp $BUILD_OUTPUT/../*.deb $ARTIFACT/$(make -s kernelversion)
 }
 
 function main()
