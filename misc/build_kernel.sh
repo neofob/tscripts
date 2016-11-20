@@ -78,7 +78,7 @@ function build_kernel()
 	echo "Building binary debian packages"
 	make -s -j$CPUS bindeb-pkg
 	echo "Copying .deb and .changes files to $OUTPUT_DIR"
-	cp $BUILD_OUTPUT/../linux-$KERNEL_VERSION.changes $OUTPUT_DIR
+	cp $BUILD_OUTPUT/../linux-$KERNEL_VERSION*.changes $OUTPUT_DIR
 	cp $BUILD_OUTPUT/../linux-{headers,image}-$KERNEL_VERSION*.deb $OUTPUT_DIR
 	cp $BUILD_OUTPUT/../linux-libc-dev_$KERNEL_VERSION*.deb $OUTPUT_DIR
 	cp $BUILD_OUTPUT/../linux-firmware-image-$KERNEL_VERSION*.deb $OUTPUT_DIR
