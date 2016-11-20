@@ -7,6 +7,7 @@ ARTIFACT=${ARTIFACT:=~/Downloads/kernel}
 OLD_CONFIG=${OLD_CONFIG:=/boot/config-`uname -r`}
 KERNEL_SRC=${KERNEL_SRC:=`pwd`}
 CPUS=${CPUS:=$(grep -c processor /proc/cpuinfo)}
+KERNEL_VERSION=""
 
 help_msg="\e[1;31mUsage:\e[0m $0
 	Build new kernel from the current config file
@@ -56,20 +57,30 @@ function dump_vars()
 
 function setup_env()
 {
+	echo "Setting the environment"
 	[ -d "$BUILD_OUTPUT" ] || mkdir -p $BUILD_OUTPUT
 	[ -d "$ARTIFACT" ] || mkdir -p $ARTIFACT
 	export KBUILD_OUTPUT=$BUILD_OUTPUT
 	cp $OLD_CONFIG $BUILD_OUTPUT/.config
 	cd $KERNEL_SRC
+	echo "Creating the new config file based on $OLD_CONFIG"
 	make -s olddefconfig
-	mkdir -p $ARTIFACT/$(make -s kernelversion)
+	KERNEL_VERSION=$(make -s kernelversion)
+	mkdir -p $ARTIFACT/$(KERNEL_VERSION)
 }
 
 function build_kernel()
 {
+	echo "Building the new kernel version $KERNEL_VERSION"
 	make -s -j$CPUS
+	echo "Building binary debian packages"
 	make -s -j$CPUS bindeb-pkg
-	cp $BUILD_OUTPUT/../*.deb $ARTIFACT/$(make -s kernelversion)
+	echo "Copying .deb and .changes files to $ARTIFACT/$KERNEL_VERSION"
+	cp $BUILD_OUTPUT/../linux-$(KERNEL_VERSION).changes $ARTIFACT/$KERNEL_VERSION
+	cp $BUILD_OUTPUT/../linux-{headers,image}-$(KERNEL_VERSION)*.deb $ARTIFACT/$KERNEL_VERSION
+	cp $BUILD_OUTPUT/../linux-libc-dev_$(KERNEL_VERSION)*.deb $ARTIFACT/$KERNEL_VERSION
+	cp $BUILD_OUTPUT/../linux-firmware-image-$(KERNEL_VERSION)*.deb $ARTIFACT/$KERNEL_VERSION
+	echo "DONE!!!"
 }
 
 function main()
