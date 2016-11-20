@@ -93,7 +93,7 @@ function mount_dev
 function sync_mount
 {
 	log "rsync...data from $1 to $2"
-	time rsync -av $1/ $2/
+	time sudo rsync -av $1/ $2/
 }
 
 # see https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
