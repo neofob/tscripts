@@ -50,7 +50,7 @@ function print_help()
 
 function dump_vars()
 {
-	VAR_LIST="BUILD_OUTPUT ARTIFACT OLD_CONFIG KERNEL_SRC CPUS"
+	VAR_LIST="BUILD_OUTPUT ARTIFACT OLD_CONFIG KERNEL_SRC CPUS KERNEL_VERSION OUTPUT_DIR"
 	for v in $VAR_LIST; do
 		eval echo "$v=\$$v"
 	done
@@ -80,10 +80,10 @@ function build_kernel()
 	echo "Building binary debian packages"
 	make -s -j$CPUS bindeb-pkg
 	echo "Copying .deb and .changes files to $OUTPUT_DIR"
-	cp $BUILD_OUTPUT/../linux-$KERNEL_VERSION*.changes $OUTPUT_DIR
-	cp $BUILD_OUTPUT/../linux-{headers,image}-$KERNEL_VERSION_*.deb $OUTPUT_DIR
-	cp $BUILD_OUTPUT/../linux-libc-dev_$KERNEL_VERSION*.deb $OUTPUT_DIR
-	cp $BUILD_OUTPUT/../linux-firmware-image-$KERNEL_VERSION*.deb $OUTPUT_DIR
+	cp $BUILD_OUTPUT/../linux-${KERNEL_VERSION}*.changes $OUTPUT_DIR
+	cp $BUILD_OUTPUT/../linux-{headers,image}-${KERNEL_VERSION}_*.deb $OUTPUT_DIR
+	cp $BUILD_OUTPUT/../linux-libc-dev_${KERNEL_VERSION}*.deb $OUTPUT_DIR
+	cp $BUILD_OUTPUT/../linux-firmware-image-${KERNEL_VERSION}*.deb $OUTPUT_DIR
 	echo "DONE!!!"
 }
 
