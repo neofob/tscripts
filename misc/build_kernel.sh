@@ -39,7 +39,7 @@ help_msg="\e[1;31mUsage:\e[0m $0
 	$ $0
 
 	1) Set KERNEL_SRC
-	$ KEREL_SRC=/opt/src/linux $0
+	$ KERNEL_SRC=/opt/src/linux $0
 
 __author__: tuan t. pham"
 
