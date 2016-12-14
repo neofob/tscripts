@@ -19,7 +19,7 @@ function print_help()
 
 function process()
 {
-	time tar cfO - $SRC | pv | pxz -T${CPUS} -c${COMPRESS_LEVEL} - > $DESC
+	time tar cfO - $SRC | pv -s ${SIZE} | pxz -T${CPUS} -c${COMPRESS_LEVEL} - > $DESC
 }
 
 function check()
@@ -32,6 +32,7 @@ function check()
 	PARAMS_NO=$#
 	SRC="${*:1:$# - 1}"
 	DESC="${*: -1}"
+	SIZE=$(du -cbs ${SRC} | tail -n 1 | awk '{print $1}')
 
 	echo "Number of parameters = $PARAMS_NO"
 	echo "SRC=$SRC"
