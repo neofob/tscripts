@@ -8,7 +8,7 @@ CAM_MODEL=${CAM_MODEL:="RICOH THETA S"}
 
 for f in "$@"; do
 	echo "Processing $f"
-	exiftool -ProjectionType="$PTYPE" \
+	exiftool -w -ProjectionType="$PTYPE" \
 		-Make="$CAM_MAKE" \
 		-Model="$CAM_MODEL" \
 		$f
