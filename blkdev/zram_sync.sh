@@ -26,13 +26,21 @@ function log()
 if [ ! "$SIZE" ]; then
 	# snippet from init.d/zram
 	# Get the available memory in KB
-	SIZE=$(((MEM * 50 / 100)))
-	log "SIZE=$SIZE(K)"
+	SIZE=$(((MEM * 50 / 100)))K
+	log "SIZE=${SIZE}"
 fi
 
 # Load the zram module if it is not loaded alread
 function load_mod
 {
+	# If ZRAM is defined, we assumed that the user knows how things work;
+	# we just update the MNT point accordingly
+	if [ -b "$ZRAM" ]; then
+		[ -n "$MNT" ] || MNT="${MNT_PREFIX}/$(basename ${ZRAM})"
+		return
+	fi
+
+	# ZRAM is not defined, we will try to load the module
 	grep "^zram" /proc/modules >/dev/null
 	if [ "$?" = 1 ]; then
 		sudo modprobe zram num_devices=$MAX_DEV
@@ -152,8 +160,8 @@ function help_msg
 	echo -e "\t$(wrap_color red "CPUS")\tNumber of CPUs to be used"
 	echo -e "\t\tDEFAULT CPUS=\`grep -c proc /proc/cpuinfo\`"
 
-	echo -e "\t$(wrap_color red "ZRAM")\tzram device to be use, e.g. zram0"
-	echo -e "\t\tDEFAULT ZRAM=zram0"
+	echo -e "\t$(wrap_color red "ZRAM")\tzram device to be use, e.g. /dev/zram0"
+	echo -e "\t\tDEFAULT ZRAM=/dev/zram0"
 
 	echo -e "\t$(wrap_color red "SIZE")\tzram device size to be set"
 	echo -e "\t\tDEFAULT SIZE=Half of TotalMem ($MEM KB)"
@@ -206,7 +214,7 @@ function var_dump
 function main
 {
 	log "Entering main function"
-	[ ! "$ZRAM" ] && load_mod
+	load_mod
 	create_zram $ZRAM $SIZE
 	[ -d "$MNT" ] || mkdir -p $MNT
 	mount_dev $ZRAM $MNT
