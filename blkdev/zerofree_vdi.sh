@@ -16,23 +16,27 @@ NBD_CMD_D="qemu-nbd -d"
 # file resides on a SSD or non-spinning disk
 # ZEROFREE_OPTS="-t 4"
 
-help_msg="\e[1;31mUsage:\e[0m $0 <VirtualDiskImage>
-	zerofree a virtual disk using nbd, Network Block Device, loopback mounting
-	Run this script with sudo or as \e[1;31mroot\e[0m
+red="\e[1;31m"
+yellow="\e[1;33m"
+end="\e[0m"
 
-\e[1;31mEnvironment variables:\e[0m
+help_msg="${red}Usage:${end} $0 <VirtualDiskImage>
+	zerofree a virtual disk using nbd, Network Block Device, loopback mounting
+	Run this script with sudo or as ${red}root${end}
+
+${red}Environment variables:${end}
 	NBD_DEV Network Block Device to be used
 		e.g. /dev/nbd0, /dev/nbd1
 		DEFAULT NBD_DEV=/dev/nbd0
 
-\e[1;31mExamples:\e[0m
+${red}Examples:${end}
 	0) Use the default /dev/nbd0 for virtual image disk
 	# $0 Jessie.vdi
 
 	1) Use nbd2 as a nbd loopback device and zerofree the 2nd partion
 	# NBD_DEV=/dev/nbd2 VPART=2 $0 Jessie.vdi
 
-\e[1;33mRequirement package(s) (debian/ubuntu):\e[0m
+${yellow}Requirement package(s) (debian/ubuntu):${end}
 	# apt-get install -yq qemu-utils zerofree
 	# modprobe nbd max_part=16
 

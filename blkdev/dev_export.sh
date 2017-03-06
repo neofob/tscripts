@@ -5,7 +5,8 @@
 
 # block device @ /dev/loop0, /dev/nbd0, /dev/sda1...etc.
 # zerofree /dev/loop0
-# dd if=/dev/loop0 bs=1M | pv | pxz -T4 -c9 - > disk.img.xz
+# dd if=/dev/loop0 bs=1M | pv -s `blockdev --getsize64 /dev/loop0` \
+# 			 | pxz -T4 -c9 - > disk.img.xz
 # usage:
 # ./dev_export.sh -d /dev/sdc1 -c 4 -o sdc1.img.xz
 
@@ -17,7 +18,11 @@ CPUS=${CPUS:=$(grep -c processor /proc/cpuinfo)}
 OUT_IMG=disk.img.xz
 ZF=${ZF:=0}
 
-help_msg="\e[1;31mUsage:\e[0m $0 [-h] [-z] <-d BLOCK_DEV> [-c CPUS] <-o OutputDiskImage.img.xz>
+red="\e[1;31m"
+yellow="\e[1;33m"
+end="\e[0m"
+
+help_msg="${red}Usage:${end} $0 [-h] [-z] <-d BLOCK_DEV> [-c CPUS] <-o OutputDiskImage.img.xz>
 
 Zerofree a block device, compress it to an output file
 
@@ -34,16 +39,16 @@ Zerofree a block device, compress it to an output file
 	-o Output file name
 	  DEFAULT: $OUT_IMG
 
-\e[1;31mExample(s):\e[0m
+${red}Example(s):${end}
 	0) Export /dev/sdb1 to sdb.img.xz (zerofree, use 4 core to compress)
 	$ $0 -z -d /dev/sdb1 -c 4 -o sdb.img.xz
 
 	1) Export /dev/loop0, no zerofree
 	$ $0 -d /dev/loop0 -o disk.img.xz
 
-\e[1;33mOther required tools:\e[0m zerofree, pv, pxz
+${yellow}Other required tools:${end} zerofree, pv, pxz
 
-\e[1;33mNotice:\e[0m This script should be run as \e[1;31mroot\e[0m in order to have access to the block device(s).
+${yellow}Notice:${end} This script should be run as ${red}root${end} in order to have access to the block device(s).
 
 __author__: tuan t. pham"
 
