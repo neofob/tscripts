@@ -22,7 +22,12 @@ MNT_CMD=${MNT_CMD:="mount -t ext4"}
 LABEL=${LABEL:="Backup"}
 OPTS=":fL:s:m:d:h"
 
-help_msg="\e[1;31mUsage:\e[0m $0 [-f|-L LABEL] <-s SRC> [-m MOUNT_POINT] <-d DEV>
+red="\e[1;31m"
+yellow="\e[1;33m"
+end="\e[0m"
+
+
+help_msg="${red}Usage:${end} $(basename $0) [-f|-L LABEL] <-s SRC> [-m MOUNT_POINT] <-d DEV>
 	Copy your aging data to a [new] filesystem
 
 	-f format the block device
@@ -39,7 +44,7 @@ help_msg="\e[1;31mUsage:\e[0m $0 [-f|-L LABEL] <-s SRC> [-m MOUNT_POINT] <-d DEV
 	-d DEV block device
 	   DEFAULT $DEV
 
-\e[1;31mExamples:\e[0m
+${red}Examples:${end}
 	0) Create a new fs on /dev/sdc1 and copy all data from /opt/photos to it
 	$ $0 -f -s /opt/photos -d /dev/sdc1
 		/dev/sdc1 is mounted on default /tmp/dest
@@ -51,7 +56,7 @@ help_msg="\e[1;31mUsage:\e[0m $0 [-f|-L LABEL] <-s SRC> [-m MOUNT_POINT] <-d DEV
 	2) This help message
 	$ $0 -h
 
-\e[1;33mNotice:\e[0m run this as root
+${red}Notice:${end} run this as root
 
 __author__: tuan t. pham"
 

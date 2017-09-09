@@ -53,7 +53,7 @@ function load_mod
 		# We need to check for an available zram device
 		ZRAM_DEV=$(ls /dev/zram*)
 		for z in $ZRAM_DEV; do
-			DEV_NAME=$(echo $z | grep -o "zram.$")
+			DEV_NAME=$(basename $z)
 			DEV_SIZE=$(cat /sys/block/$DEV_NAME/disksize)
 			# find an available zram device
 			if [ "$DEV_SIZE" -eq 0 ]; then
@@ -82,7 +82,7 @@ function create_zram
 		echo "$2" | grep --color=always -o "[0-9]\+[KMG$]\?"
 		exit 1
 	fi
-	DEV_NAME=$(echo $1 | grep -o "zram.$")
+	DEV_NAME=$(basename $1)
 	echo $CPUS | sudo tee /sys/block/$DEV_NAME/max_comp_streams >/dev/null
 	echo $2 | sudo tee /sys/block/$DEV_NAME/disksize >/dev/null
 	time sudo $MKFS_CMD $ZRAM_LABEL $1
@@ -146,35 +146,37 @@ function wrap_color()
 
 function help_msg
 {
-	echo "$(wrap_color red "Usage:") $0"
-	echo -e "\t$0 creates a compressed ram disk device, zram, formats it"\
+	echo "$(wrap_color red "Usage:") $(basename $0)"
+	echo -e "\t$(basename $0) creates a compressed ram disk device, zram, formats it"\
 		"in ext4"
 	echo -e "\tmounts it, rsync it with your source"
 	echo -e "\t$(wrap_color yellow "[--help|-h]:") This help message"
 	echo
-	echo -e "$(wrap_color yellow "Environment Variables:")"
+	echo -e "$(wrap_color yellow "Environment Variables, default value:")"
 
-	echo -e "\t$(wrap_color red "USER")\tUSER name"
-	echo -e "\t\tDEFAULT USER=\`whoami\`"
+	echo -e "\t$(wrap_color red "USER")\tusername"
+	echo -e "\t\tUSER=\`whoami\`"
+	echo -e "\t\t    =$(whoami)"
 
 	echo -e "\t$(wrap_color red "CPUS")\tNumber of CPUs to be used"
-	echo -e "\t\tDEFAULT CPUS=\`grep -c proc /proc/cpuinfo\`"
+	echo -e "\t\tCPUS=\`grep -c proc /proc/cpuinfo\`"
+	echo -e "\t\t    =$(grep -c proc /proc/cpuinfo)"
 
 	echo -e "\t$(wrap_color red "ZRAM")\tzram device to be use, e.g. /dev/zram0"
-	echo -e "\t\tDEFAULT ZRAM=/dev/zram0"
+	echo -e "\t\tZRAM=/dev/zram0"
 
 	echo -e "\t$(wrap_color red "SIZE")\tzram device size to be set"
-	echo -e "\t\tDEFAULT SIZE=Half of TotalMem ($MEM KB)"
+	echo -e "\t\tSIZE=Half of TotalMem ($MEM KB)"
 
 	echo -e "\t$(wrap_color red "MNT")\tMount point"
-	echo -e "\t\tDEFAULT MNT=/tmp/zram0"
+	echo -e "\t\tMNT=/tmp/zram0"
 
 	echo -e "\t$(wrap_color red "SRC")\tSource directory to be rsync'ed"
-	echo -e "\t\tDEFAULT SRC is undefined;"
+	echo -e "\t\tSRC is undefined;"
 	echo
 
-	echo -e "\t$(wrap_color red "MKFS_CMD")\tFilesytem command with arguments: LABEL BLOCKDEV"
-	echo -e "\t\tDEFAULT MKFS_CMD=mkfs.ext4 -m 0 -L"
+	echo -e "\t$(wrap_color red "MKFS_CMD")\tFilesytem command with arguments to be appended at the end: LABEL BLOCKDEV"
+	echo -e "\t\tMKFS_CMD=mkfs.ext4 -m 0 -L"
 	echo
 
 	echo -e "$(wrap_color yellow Examples:)"
@@ -219,6 +221,9 @@ function main
 	[ -d "$MNT" ] || mkdir -p $MNT
 	mount_dev $ZRAM $MNT
 	[ -d "$SRC" ] && sync_mount $SRC $MNT
+	echo
+	echo "Disk Usage of device $(wrap_color red $ZRAM)"
+	df -h $ZRAM
 }
 
 [ "$DEBUG" = 1 ] && var_dump

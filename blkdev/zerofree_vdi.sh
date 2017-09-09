@@ -20,7 +20,7 @@ red="\e[1;31m"
 yellow="\e[1;33m"
 end="\e[0m"
 
-help_msg="${red}Usage:${end} $0 <VirtualDiskImage>
+help_msg="${red}Usage:${end} $(basename $0) <VirtualDiskImage>
 	zerofree a virtual disk using nbd, Network Block Device, loopback mounting
 	Run this script with sudo or as ${red}root${end}
 

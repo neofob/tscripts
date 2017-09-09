@@ -22,7 +22,7 @@ red="\e[1;31m"
 yellow="\e[1;33m"
 end="\e[0m"
 
-help_msg="${red}Usage:${end} $0 [-h] [-z] <-d BLOCK_DEV> [-c CPUS] <-o OutputDiskImage.img.xz>
+help_msg="${red}Usage:${end} $(basename $0) [-h] [-z] <-d BLOCK_DEV> [-c CPUS] <-o OutputDiskImage.img.xz>
 
 Zerofree a block device, compress it to an output file
 
