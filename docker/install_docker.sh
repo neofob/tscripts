@@ -5,7 +5,7 @@
 # vagrant is the username to be added at the end of installtion
 
 apt-get update
-apt-get install \
+apt-get install -yq \
 	apt-transport-https \
 	ca-certificates \
 	curl \
@@ -21,7 +21,7 @@ add-apt-repository \
 	stable"
 
 apt-get update
-apt-get install docker-ce
+apt-get install -yq docker-ce
 
 # groupadd docker
 usermod -aG docker $1
