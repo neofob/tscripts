@@ -14,7 +14,7 @@ IFS=","
 # .mp4 pass
 LIST=`ls -m *.mp4 2>/dev/null`
 if [ $? -eq 0 ]; then
-	for f in `ls -m *.mp4`; do
+	for f in $LIST; do
 		infile=`echo -n ${f} | sed -e 's/ /\\\ /g'`
 		outfile=`echo -n ${f} | sed -e 's/ /_/g' | eval sed -e 's/.\{12\}\.mp4$/.mp4/'`
 		if [ "$infile" != "$outfile" ]; then
@@ -27,7 +27,7 @@ fi
 # .mkv pass
 LIST=`ls -m *.mkv 2>/dev/null`
 if [ $? -eq 0 ]; then
-	for f in `ls -m *.mkv`; do
+	for f in $LIST; do
 		infile=`echo -n ${f} | sed -e 's/ /\\\ /g'`
 		outfile=`echo -n ${f} | sed -e 's/ /_/g' | eval sed -e 's/.\{12\}\.mkv$/.mkv/'`
 		if [ "$infile" != "$outfile" ]; then
@@ -39,7 +39,7 @@ fi
 # .webm pass
 LIST=`ls -m *.webm 2>/dev/null`
 if [ $? -eq 0 ]; then
-	for f in `ls -m *.webm`; do
+	for f in $LIST; do
 		infile=`echo -n ${f} | sed -e 's/ /\\\ /g'`
 		outfile=`echo -n ${f} | sed -e 's/ /_/g' | eval sed -e 's/.\{12\}\.webm$/.webm/'`
 		if [ "$infile" != "$outfile" ]; then

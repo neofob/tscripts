@@ -10,31 +10,35 @@ CPUS=${CPUS:=$(grep -c processor /proc/cpuinfo)}
 KERNEL_VERSION=""
 OUTPUT_DIR=""
 
-help_msg="\e[1;31mUsage:\e[0m $0
+red="\e[1;31m"
+yellow="\e[1;33m"
+end="\e[0m"
+
+help_msg="${red}Usage:${end} $0
 	Build new kernel from the current config file
 
 	-d: Dump environment variables
 
 	-h|--help: This help messages
 
-\e[1;31mEnvironment Variables:\e[0m
-	\e[1;33mBUILD_OUTPUT\e[0m default=$BUILD_OUTPUT
+${red}Default Environment Variables:${end}
+	${yellow}BUILD_OUTPUT${end}=$BUILD_OUTPUT
 		Output directory for object files. One level up is where
 		the .deb files are created.
 
-	\e[1;33mARTIFACT\e[0m default=$ARTIFACT
+	${yellow}ARTIFACT${end}=$ARTIFACT
 		Directory where the .deb files are copied to.
 
-	\e[1;33mOLD_CONFIG\e[0m default=$OLD_CONFIG
+	${yellow}OLD_CONFIG${end}=$OLD_CONFIG
 		Old config file.
 
-	\e[1;33mKERNEL_SRC\e[0m default=$KERNEL_SRC
+	${yellow}KERNEL_SRC${end}=$KERNEL_SRC
 		Directory of linux kernel source code.
 
-	\e[1;33mCPUS\e[0m  default=$CPUS
+	${yellow}CPUS${end}=$CPUS
 		Number of CPU cores to be used.
 
-\e[1;31mExamples:\e[0m
+${red}Examples:${end}
 	0) Use the default settings
 	$ $0
 

@@ -2,15 +2,22 @@
 # Archive a bunch of files, directories to a .tar.xz file
 # __author__: tuan t. pham
 
-help_msg="\e[1;31mUsage:\e[0m $0 <src0 src1...> <output_file.tar.xz>
-
-Tar and compress a bunch of input dirs, files to an a .tar.xz file
-
-__author__: tuan t. pham"
+red="\e[1;31m"
+yellow="\e[1;33m"
+end="\e[0m"
 
 CPUS=${CPUS:=$(grep -c processor /proc/cpuinfo)}
-# Set this to 6 if 9 is too slow
 COMPRESS_LEVEL=${COMPRESS_LEVEL:=9}
+
+help_msg="${red}Usage:${end} $(basename $0) <src0 src1...> <output_file.tar.xz>
+Tar and compress a bunch of input dirs, files to an a .tar.xz file
+
+Default env variable settings:
+${yellow}CPUS${end}=${CPUS}
+${yellow}COMPRESS_LEVEL${end}=${COMPRESS_LEVEL}
+Set this to 6 if 9 is too slow
+
+__author__: tuan t. pham"
 
 function print_help()
 {
