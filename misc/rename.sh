@@ -16,7 +16,7 @@ LIST=`ls -m *.mp4 2>/dev/null`
 if [ $? -eq 0 ]; then
 	for f in $LIST; do
 		infile=`echo -n ${f} | sed -e 's/ /\\\ /g'`
-		outfile=`echo -n ${f} | sed -e 's/ /_/g' | eval sed -e 's/.\{12\}\.mp4$/.mp4/'`
+		outfile=`echo -n ${f} | sed -e 's/ /_/g' | sed -e 's/-.\{11\}\.mp4$/.mp4/'`
 		if [ "$infile" != "$outfile" ]; then
 			echo -n "${infile} ${outfile}" | xargs -n 2 mv
 		fi
@@ -29,7 +29,7 @@ LIST=`ls -m *.mkv 2>/dev/null`
 if [ $? -eq 0 ]; then
 	for f in $LIST; do
 		infile=`echo -n ${f} | sed -e 's/ /\\\ /g'`
-		outfile=`echo -n ${f} | sed -e 's/ /_/g' | eval sed -e 's/.\{12\}\.mkv$/.mkv/'`
+		outfile=`echo -n ${f} | sed -e 's/ /_/g' | sed -e 's/-.\{11\}\.mkv$/.mkv/'`
 		if [ "$infile" != "$outfile" ]; then
 			echo -n "${infile} ${outfile}" | xargs -n 2 mv
 		fi
@@ -41,7 +41,7 @@ LIST=`ls -m *.webm 2>/dev/null`
 if [ $? -eq 0 ]; then
 	for f in $LIST; do
 		infile=`echo -n ${f} | sed -e 's/ /\\\ /g'`
-		outfile=`echo -n ${f} | sed -e 's/ /_/g' | eval sed -e 's/.\{12\}\.webm$/.webm/'`
+		outfile=`echo -n ${f} | sed -e 's/ /_/g' | sed -e 's/-.\{11\}\.webm$/.webm/'`
 		if [ "$infile" != "$outfile" ]; then
 			echo -n "${infile} ${outfile}" | xargs -n 2 mv
 		fi
