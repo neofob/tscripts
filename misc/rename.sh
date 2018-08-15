@@ -9,41 +9,39 @@ SRC_DIR=${SRC_DIR:=.}
 # .webm
 
 pushd $SRC_DIR >/dev/null
-IFS=","
 
+IFS=$'\n'$'\r'
 # .mp4 pass
-LIST=`ls -m *.mp4 2>/dev/null`
+LIST=`ls -1 --quoting-style=shell *.mp4 2>/dev/null`
 if [ $? -eq 0 ]; then
 	for f in $LIST; do
-		infile=`echo -n ${f} | sed -e 's/ /\\\ /g'`
-		outfile=`echo -n ${f} | sed -e 's/ /_/g' | sed -e 's/-.\{11\}\.mp4$/.mp4/'`
-		if [ "$infile" != "$outfile" ]; then
-			echo -n "${infile} ${outfile}" | xargs -n 2 mv
+		outfile=`echo ${f} | sed -e 's/,//g' | tr '() ' '___' | sed -e 's/_-_/-/g' | sed -e 's/-.\{11\}.mp4/.mp4/'`
+		if [ "$f" != "$outfile" ]; then
+			#echo "${f} ${outfile}"
+			echo "${f} ${outfile}" | xargs mv
 		fi
 
 	done
 fi
 
 # .mkv pass
-LIST=`ls -m *.mkv 2>/dev/null`
+LIST=`ls -1 --quoting-style=shell *.mkv 2>/dev/null`
 if [ $? -eq 0 ]; then
 	for f in $LIST; do
-		infile=`echo -n ${f} | sed -e 's/ /\\\ /g'`
-		outfile=`echo -n ${f} | sed -e 's/ /_/g' | sed -e 's/-.\{11\}\.mkv$/.mkv/'`
-		if [ "$infile" != "$outfile" ]; then
-			echo -n "${infile} ${outfile}" | xargs -n 2 mv
+		outfile=`echo ${f} | sed -e 's/,//g' | tr '() ' '___' | sed -e 's/_-_/-/g' | sed -e 's/-.\{11\}.mkv/.mkv/'`
+		if [ "$f" != "$outfile" ]; then
+			echo "${f} ${outfile}" | xargs mv
 		fi
 	done
 fi
 
 # .webm pass
-LIST=`ls -m *.webm 2>/dev/null`
+LIST=`ls -1 --quoting-style=shell *.webm 2>/dev/null`
 if [ $? -eq 0 ]; then
 	for f in $LIST; do
-		infile=`echo -n ${f} | sed -e 's/ /\\\ /g'`
-		outfile=`echo -n ${f} | sed -e 's/ /_/g' | sed -e 's/-.\{11\}\.webm$/.webm/'`
-		if [ "$infile" != "$outfile" ]; then
-			echo -n "${infile} ${outfile}" | xargs -n 2 mv
+		outfile=`echo ${f} | sed -e 's/,//g' | tr '() ' '___' | sed -e 's/_-_/-/g' | sed -e 's/-.\{11\}.webm/.webm/'`
+		if [ "$f" != "$outfile" ]; then
+			echo -n "${f} ${outfile}" | xargs mv
 		fi
 	done
 fi
