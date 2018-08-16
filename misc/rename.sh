@@ -15,7 +15,12 @@ IFS=$'\n'$'\r'
 LIST=`ls -1 --quoting-style=shell *.mp4 2>/dev/null`
 if [ $? -eq 0 ]; then
 	for f in $LIST; do
-		outfile=`echo ${f} | sed -e 's/,//g' | tr '() ' '___' | sed -e 's/_-_/-/g' | sed -e 's/-.\{11\}.mp4/.mp4/'`
+		outfile=$(echo ${f} | sed -e 's/,//g' \
+			| tr '() ' '___' \
+			| sed -e 's/_-_/-/g' \
+			| sed -e 's/._/_/' \
+			| sed -e 's/___/_/g' \
+			| sed -e 's/-.\{11\}.mp4/.mp4/')
 		if [ "$f" != "$outfile" ]; then
 			#echo "${f} ${outfile}"
 			echo "${f} ${outfile}" | xargs mv
@@ -28,7 +33,12 @@ fi
 LIST=`ls -1 --quoting-style=shell *.mkv 2>/dev/null`
 if [ $? -eq 0 ]; then
 	for f in $LIST; do
-		outfile=`echo ${f} | sed -e 's/,//g' | tr '() ' '___' | sed -e 's/_-_/-/g' | sed -e 's/-.\{11\}.mkv/.mkv/'`
+		outfile=$(echo ${f} | sed -e 's/,//g' \
+			| tr '() ' '___' \
+			| sed -e 's/_-_/-/g' \
+			| sed -e 's/._/_/' \
+			| sed -e 's/___/_/g' \
+			| sed -e 's/-.\{11\}.mkv/.mkv/')
 		if [ "$f" != "$outfile" ]; then
 			echo "${f} ${outfile}" | xargs mv
 		fi
@@ -39,9 +49,14 @@ fi
 LIST=`ls -1 --quoting-style=shell *.webm 2>/dev/null`
 if [ $? -eq 0 ]; then
 	for f in $LIST; do
-		outfile=`echo ${f} | sed -e 's/,//g' | tr '() ' '___' | sed -e 's/_-_/-/g' | sed -e 's/-.\{11\}.webm/.webm/'`
+		outfile=$(echo ${f} | sed -e 's/,//g' \
+			| tr '() ' '___' \
+			| sed -e 's/_-_/-/g' \
+			| sed -e 's/._/_/' \
+			| sed -e 's/___/_/g' \
+			| sed -e 's/-.\{11\}.webm/.webm/')
 		if [ "$f" != "$outfile" ]; then
-			echo -n "${f} ${outfile}" | xargs mv
+			echo "${f} ${outfile}" | xargs mv
 		fi
 	done
 fi
