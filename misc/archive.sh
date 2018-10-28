@@ -26,7 +26,7 @@ function print_help()
 
 function process()
 {
-	time tar cfO - $SRC | pv -s ${SIZE} | pxz -T${CPUS} -c${COMPRESS_LEVEL} - > $DESC
+	time tar cfOS - $SRC | pv -s ${SIZE} | pxz -T${CPUS} -c${COMPRESS_LEVEL} - > $DESC
 }
 
 function check()
