@@ -17,6 +17,9 @@ end="\e[0m"
 help_msg="${red}Usage:${end} $0
 	Build new kernel from the current config file
 
+    Required Debian/Ubuntu packages:
+        * build-essential yacc bison libssl-dev bc
+
 	-d: Dump environment variables
 
 	-h|--help: This help messages
