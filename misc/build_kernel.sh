@@ -9,6 +9,7 @@ KERNEL_SRC=${KERNEL_SRC:=`pwd`}
 CPUS=${CPUS:=$(grep -c processor /proc/cpuinfo)}
 KERNEL_VERSION=""
 OUTPUT_DIR=""
+SYSTEM_TRUSTED_KEYS=${SYSTEM_TRUSTED_KEYS:=""}
 
 red="\e[1;31m"
 yellow="\e[1;33m"
@@ -63,6 +64,11 @@ function dump_vars()
 	done
 }
 
+function pause()
+{
+   read -p "$*"
+}
+
 function setup_env()
 {
 	echo "Setting the environment"
@@ -73,6 +79,7 @@ function setup_env()
 	cd $KERNEL_SRC
 	echo "Creating the new config file based on $OLD_CONFIG"
 	make -s olddefconfig
+	scripts/config --file $BUILD_OUTPUT/.config --set-str SYSTEM_TRUSTED_KEYS "$SYSTEM_TRUSTED_KEYS"
 	KERNEL_VERSION=$(make -s kernelversion)
 	OUTPUT_DIR=$ARTIFACT/$KERNEL_VERSION
 	mkdir -p ${OUTPUT_DIR}
