@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Build new kernel from current kernel config
-# tuan t. tpham
+# tuan t. pham
 
 BUILD_OUTPUT=${BUILD_OUTPUT:=/tmp/build}
 ARTIFACT=${ARTIFACT:=~/Downloads/kernel}
@@ -80,37 +80,37 @@ function pause()
 
 function set_custom_env()
 {
-		if [ $DEBUG_INFO = "n" ]; then
-			scripts/config --file $BUILD_OUTPUT/.config --disable DEBUG_INFO
-		else
-			scripts/config --file $BUILD_OUTPUT/.config --enable DEBUG_INFO
-		fi
+	if [ $DEBUG_INFO = "n" ]; then
+		scripts/config --file $BUILD_OUTPUT/.config --disable DEBUG_INFO
+	else
+		scripts/config --file $BUILD_OUTPUT/.config --enable DEBUG_INFO
+	fi
 
-		scripts/config --file $BUILD_OUTPUT/.config --set-str SYSTEM_TRUSTED_KEYS "$SYSTEM_TRUSTED_KEYS"
+	scripts/config --file $BUILD_OUTPUT/.config --set-str SYSTEM_TRUSTED_KEYS "$SYSTEM_TRUSTED_KEYS"
 
-		if [ $KGDB = "n" ]; then
-			scripts/config --file $BUILD_OUTPUT/.config --disable KGDB
-		else
-			scripts/config --file $BUILD_OUTPUT/.config --enable KGDB
-		fi
+	if [ $KGDB = "n" ]; then
+		scripts/config --file $BUILD_OUTPUT/.config --disable KGDB
+	else
+		scripts/config --file $BUILD_OUTPUT/.config --enable KGDB
+	fi
 
-		if [ $KGDB_SERIAL_CONSOLE = "n" ]; then
-			scripts/config --file $BUILD_OUTPUT/.config --disable KGDB_SERIAL_CONSOLE
-		else
-			scripts/config --file $BUILD_OUTPUT/.config --enable KGDB_SERIAL_CONSOLE
-		fi
+	if [ $KGDB_SERIAL_CONSOLE = "n" ]; then
+		scripts/config --file $BUILD_OUTPUT/.config --disable KGDB_SERIAL_CONSOLE
+	else
+		scripts/config --file $BUILD_OUTPUT/.config --enable KGDB_SERIAL_CONSOLE
+	fi
 
-		if [ $FRAME_POINTER = "n" ]; then
-			scripts/config --file $BUILD_OUTPUT/.config --disable FRAME_POINTER
-		else
-			scripts/config --file $BUILD_OUTPUT/.config --enable FRAME_POINTER
-		fi
+	if [ $FRAME_POINTER = "n" ]; then
+		scripts/config --file $BUILD_OUTPUT/.config --disable FRAME_POINTER
+	else
+		scripts/config --file $BUILD_OUTPUT/.config --enable FRAME_POINTER
+	fi
 
-		if [ $UNWINDER_FRAME_POINTER = "n" ]; then
-			scripts/config --file $BUILD_OUTPUT/.config --disable UNWINDER_FRAME_POINTER
-		else
-			scripts/config --file $BUILD_OUTPUT/.config --enable UNWINDER_FRAME_POINTER
-		fi
+	if [ $UNWINDER_FRAME_POINTER = "n" ]; then
+		scripts/config --file $BUILD_OUTPUT/.config --disable UNWINDER_FRAME_POINTER
+	else
+		scripts/config --file $BUILD_OUTPUT/.config --enable UNWINDER_FRAME_POINTER
+	fi
 }
 
 function setup_env()
