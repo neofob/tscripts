@@ -7,12 +7,18 @@
 # Reference: https://gist.github.com/protrolium/e0dbd4bb0f1a396fcb55
 # ffmpeg -i test.mp4 -f mp3 -ab 320000 -vn test.mp3
 
+# TODO; use map
+# https://stackoverflow.com/questions/21184846/ffmpeg-transcoding-multiple-input-files-to-multiple-output-files-with-single-co
+echo "> Entering $0"
+
 SRC_DIR=${SRC_DIR:=.}
-FILE_PATTERN=${FILE_PATTERN=*.mp4}
+FILE_PATTERN=${FILE_PATTERN='*.mp4 *.webm *.mkv'}
 DEST_DIR=${DEST_DIR:=.}
 FORMAT=${FORMAT:=ogg}
 BIT_RATE=${BIT_RATE:=320000}
-SANITIZE=${SANITIZE:=1}
+# This works for Ubuntu/Debian where the 1st user is 1000:1000
+DRY_RUN=${DRY_RUN:=0}
+CPUS=${CPUS:=`grep -c processor /proc/cpuinfo`}
 
 if [ ! -d $SRC_DIR ]; then
 	echo "$SRC_DIR does not exists!"
@@ -23,10 +29,15 @@ pushd $SRC_DIR >/dev/null
 
 [ -d $DEST_DIR ] || mkdir -p $DEST_DIR
 
-for f in `ls $FILE_PATTERN`; do
-	out_file=`echo $f | sed -e 's/\..*$/.ogg/'`
-	# echo "$f $out_file"
-	ffmpeg -i $f -f $FORMAT -ab $BIT_RATE -vn $DEST_DIR/$out_file
+for p in $FILE_PATTERN; do
+	for f in `ls $p`; do
+        tmp=$(echo $f | sed -e "s/ /_/g" )
+		out_file=$(echo $tmp | sed -e "s/\..*$/.$FORMAT/")
+		# echo "$f $out_file"
+		ffmpeg -i $f -f $FORMAT -ab $BIT_RATE -vn $DEST_DIR/$out_file
+	done
 done
 
 popd >/dev/null
+
+echo "< Exiting $0"
