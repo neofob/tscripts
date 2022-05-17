@@ -6,7 +6,7 @@
 # block device @ /dev/loop0, /dev/nbd0, /dev/sda1...etc.
 # zerofree /dev/loop0
 # dd if=/dev/loop0 bs=1M | pv -s `blockdev --getsize64 /dev/loop0` \
-# 			 | pxz -T4 -c9 - > disk.img.xz
+# 			 | xz -T4 -c9 - > disk.img.xz
 # usage:
 # ./dev_export.sh -d /dev/sdc1 -c 4 -o sdc1.img.xz
 
@@ -46,7 +46,7 @@ ${red}Example(s):${end}
 	1) Export /dev/loop0, no zerofree
 	$ $0 -d /dev/loop0 -o disk.img.xz
 
-${yellow}Other required tools:${end} zerofree, pv, pxz
+${yellow}Other required tools:${end} zerofree, pv, xz
 
 ${yellow}Notice:${end} This script should be run as ${red}root${end} in order to have access to the block device(s).
 
@@ -107,7 +107,7 @@ function process()
 		fi
 
 		SIZE=$(blockdev --getsize64 $DEV)
-		dd if=$DEV bs=1M | pv -s $SIZE | pxz -T$CPU -c9 - > $OUT_IMG
+		dd if=$DEV bs=1M | pv -s $SIZE | xz -T$CPU -c9 - > $OUT_IMG
 	else
 		echo "$DEV is not a block device"
 		exit 1

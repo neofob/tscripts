@@ -1,5 +1,5 @@
 #!/bin/bash
-# Convert *.bz2 to xz using pxz
+# Convert *.bz2 to xz using xz
 # __author__: tuan t. pham
 #
 # usage:
@@ -14,6 +14,6 @@ RM=${RM:=0}
 for i in "$@"; do
 	OUT_FILE=${i/%bz*/xz}
 	echo "Converting $i to ${OUTDIR}/${OUT_FILE}"
-	time bzcat $i | pxz -T$CPUS -c9 - | pv > ${OUT_DIR}/${OUT_FILE}
+	time bzcat $i | xz -T$CPUS -c9 - | pv > ${OUT_DIR}/${OUT_FILE}
 	[ "$RM" -eq 1 ] && (echo "Removing $i"; rm $i)
 done

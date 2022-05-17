@@ -16,7 +16,11 @@ FILE_PATTERN=${FILE_PATTERN='*.mp4 *.webm *.mkv'}
 DEST_DIR=${DEST_DIR:=.}
 FORMAT=${FORMAT:=ogg}
 BIT_RATE=${BIT_RATE:=320000}
+
 # This works for Ubuntu/Debian where the 1st user is 1000:1000
+USER_ID=${USER_ID:=1000}
+GROUP_ID=${GROUP_ID:=1000}
+
 DRY_RUN=${DRY_RUN:=0}
 CPUS=${CPUS:=`grep -c processor /proc/cpuinfo`}
 
@@ -37,6 +41,8 @@ for p in $FILE_PATTERN; do
 		ffmpeg -i $f -f $FORMAT -ab $BIT_RATE -vn $DEST_DIR/$out_file
 	done
 done
+
+chown -R $USER_ID:$GROUP_ID $DEST_DIR
 
 popd >/dev/null
 

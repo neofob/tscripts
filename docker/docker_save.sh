@@ -109,7 +109,7 @@ function help_msg()
 	echo -e "\t   DEFAULT is the list of images from docker images"
 	echo
 	echo -e "\t$(wrap_color red "COMPRESSOR") Compressor command line; take STDIN and output to STDOUT"
-	echo -e "\t\tDEFAULT COMPRESSOR=\"pxz -T$CPUS -c$COMPRESS_LEVEL - \""
+	echo -e "\t\tDEFAULT COMPRESSOR=\"xz -T$CPUS -c$COMPRESS_LEVEL - \""
 	echo
 	echo -e "\t$(wrap_color red "COMP_EXT") The file extension if the above variable is set"
 	echo -e "\t\tDEFAULT COMP_EXT=xz"
@@ -124,7 +124,7 @@ function help_msg()
 	echo -e "\t2) Save one container"
 	echo -e "\t\t\$ IMG=debian:jessie $0"
 	echo
-	echo -e "\t3) Use 4 cpu cores for pxz (default), output to 'images' directory, maximum compression level"
+	echo -e "\t3) Use 4 cpu cores for xz (default), output to 'images' directory, maximum compression level"
 	echo -e "\t\t\$ $0 -n 4 -o docker_images -c 9"
 	echo
 	echo -e "\t4) Load docker images from a directory"
@@ -141,9 +141,9 @@ function set_compressor()
 		return
 	fi
 
-	which pxz >/dev/null
+	which xz >/dev/null
 	if [ $? = 0 ]; then
-		COMPRESSOR="pxz -T$CPUS -c$COMPRESS_LEVEL - "
+		COMPRESSOR="xz -T$CPUS -c$COMPRESS_LEVEL - "
 	else
 		which xz >/dev/null
 		if [ $? = 0 ]; then

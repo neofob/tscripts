@@ -104,7 +104,7 @@ function docker_vol_save()
 	for v in ${VOLS}; do
 		echo "Saving docker volume $v"
 		CMD="docker run -t --rm -v $v:/vol -w /vol -i busybox tar cfO - .\
-			| pxz -T$CPUS -c$COMPRESSION_LEVEL - > $OUTDIR/$v.tar.xz"
+			| xz -T$CPUS -c$COMPRESSION_LEVEL - > $OUTDIR/$v.tar.xz"
 		log "$CMD"
 		eval "$CMD"
 		echo
