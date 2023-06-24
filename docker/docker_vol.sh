@@ -13,6 +13,8 @@ DEBUG=${DEBUG:=0}
 CPUS=${CPUS:=$(grep -c processor /proc/cpuinfo)}
 COMPRESSION_LEVEL=6
 OUTDIR=${OUTDIR:=$PWD}
+# the docker image must have: tar, xz that supports compression
+DOCKER_IMG=${DOCKER_IMG:=neofob/linux-utils:latest}
 
 help_msg="${red}Usage:${end} $(basename $0) OPTIONS..
 Save or load docker volumes
@@ -103,8 +105,8 @@ function docker_vol_save()
 {
 	for v in ${VOLS}; do
 		echo "Saving docker volume $v"
-		CMD="docker run -t --rm -v $v:/vol -w /vol -i busybox tar cfO - .\
-			| xz -T$CPUS -c$COMPRESSION_LEVEL - > $OUTDIR/$v.tar.xz"
+		CMD="docker run -it --rm -v $v:/vol -w /vol -v $OUTDIR:/tmp/outdir:rw \
+			$DOCKER_IMG archive.sh . /tmp/outdir/$v.tar.xz"
 		log "$CMD"
 		eval "$CMD"
 		echo

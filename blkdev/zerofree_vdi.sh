@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Mount virtual disk image, vdi and what not, as an nbd
 # then zerofree it, assuming that the filesystem is ext[3-4]
 # Just run this script as root so it doesnt have to sudo
