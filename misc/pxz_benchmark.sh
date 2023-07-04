@@ -16,6 +16,6 @@ echo "BlockCount = ${BCOUNT}" | tee -a ${SCRIPT_OUTPUT}
 echo "Core Loop = ${CORE_LOOP}" | tee -a ${SCRIPT_OUTPUT}
 
 for c in ${CORE_LOOP}; do
-    echo "Testing $c core" | tee -a ${SCRIPT_OUTPUT}
-    time dd if=/dev/zero bs=${BS} count=${BCOUNT} | pv | pxz -T${c} -c9 - >/dev/null | tee -a ${SCRIPT_OUTPUT}
+	echo "Testing $c core" | tee -a ${SCRIPT_OUTPUT}
+	time dd if=/dev/zero bs=${BS} count=${BCOUNT} | pv | pxz -T${c} -c9 - >/dev/null | tee -a ${SCRIPT_OUTPUT}
 done

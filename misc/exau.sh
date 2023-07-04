@@ -35,7 +35,7 @@ pushd $SRC_DIR >/dev/null
 
 for p in $FILE_PATTERN; do
 	for f in `ls $p`; do
-        tmp=$(echo $f | sed -e "s/ /_/g" )
+		tmp=$(echo $f | sed -e "s/ /_/g" )
 		out_file=$(echo $tmp | sed -e "s/\..*$/.$FORMAT/")
 		# echo "$f $out_file"
 		ffmpeg -i $f -f $FORMAT -ab $BIT_RATE -vn $DEST_DIR/$out_file

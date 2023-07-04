@@ -161,7 +161,7 @@ function main()
 	pushd . >/dev/null
 	setup_env
 	build_kernel
-    sync
+	sync
 	popd >/dev/null
 }
 
