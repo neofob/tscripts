@@ -158,10 +158,11 @@ function main()
 		exit 0
 	fi
 
-	pushd .
+	pushd . >/dev/null
 	setup_env
 	build_kernel
-	popd
+    sync
+	popd >/dev/null
 }
 
 main "$@"
