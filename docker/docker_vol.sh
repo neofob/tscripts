@@ -14,7 +14,7 @@ CPUS=${CPUS:=$(grep -c processor /proc/cpuinfo)}
 COMPRESSION_LEVEL=6
 OUTDIR=${OUTDIR:=$PWD}
 # the docker image must have: tar, xz that supports compression
-DOCKER_IMG=${DOCKER_IMG:=neofob/linux-utils:latest}
+DOCKER_IMG=${DOCKER_IMG:=neofob/linux-utils:23.04}
 
 help_msg="${red}Usage:${end} $(basename $0) OPTIONS..
 Save or load docker volumes
@@ -45,7 +45,7 @@ ref: https://github.com/moby/moby/issues/32263"
 
 function dump_vars()
 {
-	VAR_LIST="OPTS DEBUG OUTDIR VOLS COMPRESSION_LEVEL CPUS"
+	VAR_LIST="OPTS DEBUG OUTDIR VOLS COMPRESSION_LEVEL CPUS DOCKER_IMG"
 	for e in $VAR_LIST; do
 		d="$e"
 		d=`eval echo "\\$$d"`
@@ -106,7 +106,7 @@ function docker_vol_save()
 	for v in ${VOLS}; do
 		echo "Saving docker volume $v"
 		CMD="docker run -it --rm -v $v:/vol -w /vol -v $OUTDIR:/tmp/outdir:rw \
-			$DOCKER_IMG archive.sh . /tmp/outdir/$v.tar.xz"
+			$DOCKER_IMG bash -c 'archive.sh . /tmp/outdir/$v.tar.xz && sync'"
 		log "$CMD"
 		eval "$CMD"
 		echo
@@ -120,7 +120,7 @@ function docker_vol_load()
 	for f in $VOL_FILES; do
 		v=$(basename $f | sed -s 's/.tar.xz//')
 		echo "Loading docker volume $v"
-		CMD="docker run --rm -v $v:/vol -w /vol -i busybox tar xJ < $f"
+		CMD="docker run --rm -v $v:/vol -w /vol -i $DOCKER_IMG tar xJ < $f"
 		log "$CMD"
 		eval "$CMD"
 	done
