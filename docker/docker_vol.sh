@@ -84,7 +84,7 @@ function parse_opts()
 				;;
 			c)
 				log "Setting compression level $OPTARG"
-				COMPRESS_LEVEL=$OPTARG
+				COMPRESSION_LEVEL=$OPTARG
 				;;
 			h)
 				log "Setting -h option"
