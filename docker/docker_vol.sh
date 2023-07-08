@@ -14,7 +14,7 @@ CPUS=${CPUS:=$(grep -c processor /proc/cpuinfo)}
 COMPRESSION_LEVEL=6
 OUTDIR=${OUTDIR:=$PWD}
 # the docker image must have: tar, xz that supports compression
-DOCKER_IMG=${DOCKER_IMG:=neofob/linux-utils:23.04}
+DOCKER_IMG=${DOCKER_IMG:=neofob/linux-utils:latest}
 
 help_msg="${red}Usage:${end} $(basename $0) OPTIONS..
 Save or load docker volumes
