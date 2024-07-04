@@ -11,13 +11,13 @@
 #	done
 
 OPTS=":l:o:n:c:h"
-DEBUG=${DEBUG:=0}
-OUTDIR=${OUTDIR:=.}
-COMPRESS_LEVEL=6
+DEBUG=${DEBUG:-0}
+OUTDIR=${OUTDIR:-.}
+COMPRESS_LEVEL=${COMPRESS_LEVEL:-9}
 
 # Define your own filter command to filter out the output of `docker images`
-FILTER=${FILTER:="grep -vi \"^<None>\""}
-CPUS=${CPUS:=`grep -c processor /proc/cpuinfo`}
+FILTER=${FILTER:-"grep -vi \"^<None>\""}
+CPUS=${CPUS:-$(nproc)}
 DEF_IMG_CMD="docker images | tail -n +2 | $FILTER | awk '{print \$1\":\"\$2}'"
 IMG_CMD=${IMG_CMD:=$DEF_IMG_CMD}
 
@@ -143,7 +143,7 @@ function set_compressor()
 
 	which xz >/dev/null
 	if [ $? = 0 ]; then
-		COMPRESSOR="xz -T$CPUS -c$COMPRESS_LEVEL - "
+		COMPRESSOR="xz -T$CPUS -c$COMPRESS_LEVEL -M $(echo "$(nproc)*1.5/1" | bc)G - "
 	else
 		which xz >/dev/null
 		if [ $? = 0 ]; then
