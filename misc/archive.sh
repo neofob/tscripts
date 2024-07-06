@@ -6,8 +6,8 @@ red="\e[1;31m"
 yellow="\e[1;33m"
 end="\e[0m"
 
-CPUS=${CPUS:=$(nproc)}
-COMPRESS_LEVEL=${COMPRESS_LEVEL:=9}
+CPUS=${CPUS:-$(nproc)}
+COMPRESS_LEVEL=${COMPRESS_LEVEL:-9}
 
 help_msg="${red}Usage:${end} $(basename $0) <src0 src1...> <output_file.tar.xz>
 Tar and compress a bunch of input dirs, files to an a .tar.xz file

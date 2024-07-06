@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Extract audio track from video files
-# Usage: SRC_DIR=/path/to/videos exau.sh
+# Extract audio track from video files in wave format and 16K for transcribing
+# Usage: SRC_DIR=/path/to/videos wave16k.sh
 # __author__: tuan t. pham
 
 # Reference: https://github.com/ggerganov/whisper.cpp
@@ -13,8 +13,8 @@ DEST_DIR=${DEST_DIR:-.}
 FORMAT=${FORMAT:-wav}
 
 # This works for Ubuntu/Debian where the 1st user is 1000:1000
-USER_ID=${USER_ID:=1000}
-GROUP_ID=${GROUP_ID:=1000}
+USER_ID=${USER_ID:-1000}
+GROUP_ID=${GROUP_ID:-1000}
 
 DRY_RUN=${DRY_RUN:-0}
 CPUS=${CPUS:-$(nproc)}
@@ -40,4 +40,3 @@ done
 chown -R $USER_ID:$GROUP_ID $DEST_DIR
 
 popd >/dev/null
-

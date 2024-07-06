@@ -8,13 +8,13 @@ yellow="\e[1;33m"
 end="\e[0m"
 
 OPTS=":o:l:n:c:h"
-VOLS=${VOLS:=$(docker volume ls -q)}
-DEBUG=${DEBUG:=0}
-CPUS=${CPUS:=$(grep -c processor /proc/cpuinfo)}
+VOLS=${VOLS:-$(docker volume ls -q)}
+DEBUG=${DEBUG:-0}
+CPUS=${CPUS:-$(grep -c processor /proc/cpuinfo)}
 COMPRESSION_LEVEL=6
-OUTDIR=${OUTDIR:=$PWD}
+OUTDIR=${OUTDIR:-$PWD}
 # the docker image must have: tar, xz that supports compression
-DOCKER_IMG=${DOCKER_IMG:=neofob/linux-utils:latest}
+DOCKER_IMG=${DOCKER_IMG:-neofob/linux-utils:latest}
 
 help_msg="${red}Usage:${end} $(basename $0) OPTIONS..
 Save or load docker volumes

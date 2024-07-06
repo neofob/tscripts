@@ -19,7 +19,7 @@ COMPRESS_LEVEL=${COMPRESS_LEVEL:-9}
 FILTER=${FILTER:-"grep -vi \"^<None>\""}
 CPUS=${CPUS:-$(nproc)}
 DEF_IMG_CMD="docker images | tail -n +2 | $FILTER | awk '{print \$1\":\"\$2}'"
-IMG_CMD=${IMG_CMD:=$DEF_IMG_CMD}
+IMG_CMD=${IMG_CMD:-$DEF_IMG_CMD}
 
 # see https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 # the color code snippet is from https://github.com/docker/docker @ docker/contrib/check-config.sh

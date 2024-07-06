@@ -12,11 +12,11 @@
 
 OPTS=":zd:c:o:h"
 
-DEBUG=${DEBUG:=0}
+DEBUG=${DEBUG:-0}
 DEV=""
-CPUS=${CPUS:=$(grep -c processor /proc/cpuinfo)}
+CPUS=${CPUS:-$(nproc)}
 OUT_IMG=disk.img.xz
-ZF=${ZF:=0}
+ZF=${ZF:-0}
 
 red="\e[1;31m"
 yellow="\e[1;33m"

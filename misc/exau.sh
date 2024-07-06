@@ -11,15 +11,15 @@
 # https://stackoverflow.com/questions/21184846/ffmpeg-transcoding-multiple-input-files-to-multiple-output-files-with-single-co
 echo "> Entering $0"
 
-SRC_DIR=${SRC_DIR:=.}
-FILE_PATTERN=${FILE_PATTERN='*.mp4 *.webm *.mkv'}
-DEST_DIR=${DEST_DIR:=.}
-FORMAT=${FORMAT:=ogg}
-BIT_RATE=${BIT_RATE:=320000}
+SRC_DIR=${SRC_DIR:-.}
+FILE_PATTERN=${FILE_PATTERN:-'*.mp4 *.webm *.mkv'}
+DEST_DIR=${DEST_DIR:-.}
+FORMAT=${FORMAT:-ogg}
+BIT_RATE=${BIT_RATE:-320000}
 
 # This works for Ubuntu/Debian where the 1st user is 1000:1000
-USER_ID=${USER_ID:=1000}
-GROUP_ID=${GROUP_ID:=1000}
+USER_ID=${USER_ID:-1000}
+GROUP_ID=${GROUP_ID:-1000}
 
 DRY_RUN=${DRY_RUN:=0}
 CPUS=${CPUS:=`grep -c processor /proc/cpuinfo`}
