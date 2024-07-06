@@ -24,6 +24,8 @@ if [ ! -d $SRC_DIR ]; then
 	exit 1
 fi
 
+# save it before we cd
+OUTPUT_DIR=$(realpath $DEST_DIR)
 pushd $SRC_DIR >/dev/null
 
 [ -d $DEST_DIR ] || mkdir -p $DEST_DIR
@@ -33,8 +35,8 @@ for p in $FILE_PATTERN; do
 		tmp=$(echo $f | sed -e "s/ /_/g" )
 		base_fn=$(basename $tmp)
 		out_file="${base_fn%%.*}.${FORMAT}"
-		# echo "$f $out_file"
-		ffmpeg -i $f -f $FORMAT -ar 16000 -ac 1 -c:a pcm_s16le $DEST_DIR/$out_file
+		#echo "out_file=$out_file"
+		ffmpeg -i $f -f $FORMAT -ar 16000 -ac 1 -c:a pcm_s16le $OUTPUT_DIR/$out_file
 	done
 done
 
