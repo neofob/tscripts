@@ -31,7 +31,8 @@ pushd $SRC_DIR >/dev/null
 for p in $FILE_PATTERN; do
 	for f in $(ls $p); do
 		tmp=$(echo $f | sed -e "s/ /_/g" )
-		out_file="${tmp%%.*}.${FORMAT}"
+		base_fn=$(basename $tmp)
+		out_file="${base_fn%%.*}.${FORMAT}"
 		# echo "$f $out_file"
 		ffmpeg -i $f -f $FORMAT -ar 16000 -ac 1 -c:a pcm_s16le $DEST_DIR/$out_file
 	done
