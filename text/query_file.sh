@@ -31,7 +31,6 @@ for f in "$@"; do
 	#echo "$outfile"
 	echo "Processing $f"
 	echo "### Summary" > $OUTPUT_DIR/$outfile
-	echo -n "" >> $outfile
-	time pgpt_query.py -c ${INST} -i $f | fmt --width=80 --split-only >> $outfile
+	time pgpt_query.py -c ${INST} -i $f | fmt --width=80 --split-only | awk '{$1=$1;print}' >> $OUTPUT_DIR/$outfile
 	echo "Done."
 done

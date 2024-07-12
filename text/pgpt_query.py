@@ -35,7 +35,7 @@ client = PrivateGPTApi(base_url=base_url, timeout=my_config['instruct']['timeout
 messages = []
 messages.append({"role": "system", "content": my_config['instruct']['system']})
 
-final_user_text = "<s>[INST] " + my_config['instruct']['instruct']
+final_user_text = my_config['instruct']['instruct']
 content = open(input_file, 'r').read()
 final_user_text = final_user_text + os.linesep + \
 "```" + os.linesep + \
