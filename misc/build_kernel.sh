@@ -82,7 +82,7 @@ function pause() {
 function set_custom_env() {
   config_opts=(
     "DEBUG_INFO=n"
-    "SYSTEM_TRUSTED_KEYS"
+    "SYSTEM_TRUSTED_KEYS=''"
     "KGDB=n"
     "KGDB_SERIAL_CONSOLE=n"
     "FRAME_POINTER=n"
