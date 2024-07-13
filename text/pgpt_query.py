@@ -41,7 +41,7 @@ final_user_text = final_user_text + os.linesep + \
 "```" + os.linesep + \
 content + \
 os.linesep + \
-"```" + " [/INST]"
+"```"
 
 #print(final_user_text)
 
