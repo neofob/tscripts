@@ -39,8 +39,7 @@ final_user_text = my_config['instruct']['instruct']
 content = open(input_file, 'r').read()
 final_user_text = final_user_text + os.linesep + \
 "```" + os.linesep + \
-content + \
-os.linesep + \
+content.strip() + \
 "```"
 
 #print(final_user_text)
