@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 WHISPER_MODEL_DIR=${WHISPER_MODEL_DIR:-/mnt/extra/src/whisper.cpp/models}
-MODEL=${MODEL:-ggml-medium.en.bin}
+MODEL=${MODEL:-ggml-large-v3-turbo.bin}
 MODEL_PATH=${WHISPER_MODEL_DIR}/${MODEL}
 
 SRC_DIR=${SRC_DIR:-.}
