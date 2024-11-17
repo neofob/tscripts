@@ -107,7 +107,7 @@ function process()
 		fi
 
 		SIZE=$(blockdev --getsize64 $DEV)
-		dd if=$DEV bs=1M | pv -s $SIZE | xz -T$CPU -c9 - > $OUT_IMG
+		dd if=$DEV bs=1M | pv -s $SIZE | xz -T$CPUS -c9 -M $(echo "$(nproc)*1.5/1" | bc)G - > $OUT_IMG
 	else
 		echo "$DEV is not a block device"
 		exit 1
