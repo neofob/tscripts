@@ -81,18 +81,21 @@ function pause() {
 # Function to set custom environment
 function set_custom_env() {
   config_opts=(
-    "DEBUG_INFO=n"
-    "SYSTEM_TRUSTED_KEYS="
-    "KGDB=n"
+    "DEBUG_INFO_COMPRESSED=n"
+    "DEBUG_INFO_DWARF5=n"
+    "DEBUG_INFO=$DEBUG_INFO"
+    "FRAME_POINTER=$FRAME_POINTER"
+    "GDB_SCRIPTS=n"
+    "KGDB=$KGDB"
     "KGDB_SERIAL_CONSOLE=n"
-    "FRAME_POINTER=n"
-    "UNWINDER_FRAME_POINTER=n"
+    "SYSTEM_TRUSTED_KEYS=$SYSTEM_TRUSTED_KEYS"
+    "UNWINDER_FRAME_POINTER=$UNWINDER_FRAME_POINTER"
   )
 
   for opt in "${config_opts[@]}"; do
     key=$(cut -d '=' -f 1 <<< "$opt")
     value=${opt#*=}
-
+    echo "$key=$value"
     if [[ $value == "n" ]]; then
       scripts/config --file "$BUILD_OUTPUT/.config" --disable "$key"
     elif [[ $value == "y" ]]; then
