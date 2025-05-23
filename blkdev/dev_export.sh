@@ -103,7 +103,7 @@ function process()
 	if [ -b "$DEV" ]; then
 		if [ "$ZF" = 1 ]; then
 			echo "Zeroing $DEV"
-			zerofree $DEV
+			zerofree -f -v $DEV
 		fi
 
 		SIZE=$(blockdev --getsize64 $DEV)
