@@ -13,6 +13,6 @@ for f in $(ls ${SRC_DIR}/*.wav); do
 	base_fn=$(basename $f)
 	out_file="${base_fn%%.*}"
 	#echo $out_file
-	whisper -otxt -l en -m ${MODEL_PATH} \
+	whisper-cli -otxt -l en -m ${MODEL_PATH} \
 		-f $f -t 4 -of $OUTPUT_DIR/$out_file
 done
