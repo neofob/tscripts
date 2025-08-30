@@ -4,6 +4,7 @@
 MODELS=${MODELS="devstral:latest"}
 
 for m in ${MODELS}; do
+	echo "Downloading model $m"
 	time ollama pull $m
 done
 
