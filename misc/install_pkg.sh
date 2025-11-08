@@ -4,7 +4,10 @@
 # https://github.com/BunsenLabs/bunsen-netinstall
 #
 # install debian packages from a file
-# install_pkg.sh package_list
+# usage: ./install_pkg.sh package_list
 
+# Update the package list only once at the beginning for efficiency
 sudo apt-get update
-sudo apt-get install -yq $( sed 's/\#.*$//' $1 )
+
+# Use awk to remove comments and feed the result directly into xargs for installation
+awk '!/^#/' $1 | sudo xargs -r -n 10 apt-get install -yq

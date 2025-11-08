@@ -13,7 +13,7 @@ CONTAINER=${CONTAINER:=container}
 CIPHER=${CIPHER:-"aes-xts-essiv:sha256"}
 KEY_SIZE=${KEY_SIZE:-512}
 CRYPT_TYPE=${CRYPT_TYPE:-plain}
-HASH=$HASH:-"ripemd160"}
+HASH=${HASH:-"ripemd160"}
 # encrypted device = $1
 
 cryptsetup --cipher ${CIPHER} \
