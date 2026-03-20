@@ -1,4 +1,4 @@
-#!/bin/bash -
+#!/bin/env bash
 
 PATTERN=${PATTERN:=*.deb}
 LOCAL_DIR=${LOCAL_DIR:=/tmp}
