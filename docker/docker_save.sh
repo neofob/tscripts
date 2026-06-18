@@ -189,7 +189,7 @@ function docker_save()
 	for i in $IMG
 	do
 		echo -e "\nSaving docker image '$i'"
-		OUTFILE=$(echo $i | sed -e 's/\//_/g' | sed -e 's/:/_/')
+		OUTFILE=$(echo $i | tr '\:' '_')
 		CMD="docker save \$i | \$COMPRESSOR > \$OUTDIR/\$OUTFILE.tar.$COMP_EXT"
 		echo "Output file = '$OUTDIR/$OUTFILE.tar.$COMP_EXT'"
 		# echo $CMD
