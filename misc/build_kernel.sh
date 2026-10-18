@@ -70,7 +70,7 @@ ${GREEN}Author:${END_COLOR} tuan t. pham"
 
 # Function to print help message
 print_help() {
-        echo -e "$HELP_MSG"
+    printf '%b\n' "${HELP_MSG}"
 }
 
 # Function to dump environment variables
@@ -91,42 +91,68 @@ set_custom_env() {
         "FRAME_POINTER=$FRAME_POINTER"
         "GDB_SCRIPTS=n"
         "KGDB=$KGDB"
-        "KGDB_SERIAL_CONSOLE=n"
+        "KGDB_SERIAL_CONSOLE=$KGDB_SERIAL_CONSOLE"
         "SYSTEM_TRUSTED_KEYS=$SYSTEM_TRUSTED_KEYS"
         "UNWINDER_FRAME_POINTER=$UNWINDER_FRAME_POINTER"
     )
 
-    local key value
+    # scripts/config accepts multiple commands in a single invocation, which
+    # avoids a full-file sed pass per option.
+    local key value args=()
     for opt in "${config_opts[@]}"; do
-        key=$(cut -d '=' -f 1 <<< "$opt")
+        key=${opt%%=*}
         value=${opt#*=}
-        echo "$key=$value"
+        printf '%s=%s\n' "$key" "$value"
 
         if [[ "$value" == "n" ]]; then
-            scripts/config --file "${BUILD_OUTPUT}/.config" --disable "$key"
+            args+=(--disable "$key")
         elif [[ "$value" == "y" ]]; then
-            scripts/config --file "${BUILD_OUTPUT}/.config" --enable "$key"
+            args+=(--enable "$key")
         elif [[ -n "$value" ]]; then
-            scripts/config --file "${BUILD_OUTPUT}/.config" --set-str "$key" "$value"
+            args+=(--set-str "$key" "$value")
         fi
     done
+
+    if [[ ${#args[@]} -gt 0 ]]; then
+        scripts/config --file "${BUILD_OUTPUT}/.config" "${args[@]}"
+    fi
 }
 
 # Function to set up environment
 setup_env() {
-    echo -e "${YELLOW}Setting the environment${END_COLOR}"
+    printf '%b\n' "${YELLOW}Setting the environment${END_COLOR}"
+
+    if [[ ! -f "${OLD_CONFIG}" ]]; then
+        printf '%b\n' "${RED}Config file not found: ${OLD_CONFIG}${END_COLOR}" >&2
+        exit 2
+    fi
+    if [[ ! -f "${KERNEL_SRC}/Makefile" || ! -x "${KERNEL_SRC}/scripts/config" ]]; then
+        printf '%b\n' "${RED}Not a kernel source tree: ${KERNEL_SRC}${END_COLOR}" >&2
+        exit 2
+    fi
+
+    # Resolve to absolute paths before changing directory
+    OLD_CONFIG="$(realpath -m "${OLD_CONFIG}")"
+    BUILD_OUTPUT="$(realpath -m "${BUILD_OUTPUT}")"
+    ARTIFACT="$(realpath -m "${ARTIFACT}")"
 
     mkdir -p "${BUILD_OUTPUT}"
     mkdir -p "${ARTIFACT}"
 
     export KBUILD_OUTPUT="${BUILD_OUTPUT}"
+
+    cd "${KERNEL_SRC}" || {
+        printf '%b\n' "${RED}Failed to cd into ${KERNEL_SRC}${END_COLOR}" >&2
+        exit 2
+    }
+
+    printf '%b\n' "${YELLOW}Creating the new config file based on ${OLD_CONFIG}${END_COLOR}"
     cp "${OLD_CONFIG}" "${BUILD_OUTPUT}/.config"
 
-    cd "${KERNEL_SRC}" || { echo -e "${RED}Failed to cd into ${KERNEL_SRC}${END_COLOR}"; exit 1; }
-
-    echo -e "${YELLOW}Creating the new config file based on ${OLD_CONFIG}${END_COLOR}"
-    make -s olddefconfig
+    # Apply custom options first, then resolve so the built config and the
+    # saved artifact are always in sync.
     set_custom_env
+    make -s olddefconfig
 
     KERNEL_VERSION=$(make -s kernelversion)
     OUTPUT_DIR="${ARTIFACT}/${KERNEL_VERSION}"
@@ -135,35 +161,57 @@ setup_env() {
 
 # Function to build kernel
 build_kernel() {
-    echo -e "${YELLOW}Building kernel version ${KERNEL_VERSION}...${END_COLOR}"
+    printf '%b\n' "${YELLOW}Building kernel version ${KERNEL_VERSION}...${END_COLOR}"
 
-    # Build the new kernel
-    make -s -j"${CPUS}"
-
-    # Build binary debian packages
+    # Build the kernel and binary debian packages in a single pass.
+    # .deb/.changes/.buildinfo files are written to the parent of
+    # ${BUILD_OUTPUT}.
     make -s -j"${CPUS}" bindeb-pkg
 
-    echo -e "${GREEN}Kernel build complete!${END_COLOR}"
+    printf '%b\n' "${GREEN}Kernel build complete!${END_COLOR}"
 }
 
 # Function to copy artifacts
 copy_artifacts() {
-    echo -e "${YELLOW}Copying artifacts...${END_COLOR}"
+    printf '%b\n' "${YELLOW}Copying artifacts...${END_COLOR}"
 
-    # Temporarily allow nullglobs so missing files don't break the script
-    # if the kernel build produces a slightly different set of debian files
-    shopt -s nullglob
+    # bindeb-pkg places its outputs in the parent of ${BUILD_OUTPUT}
+    local src_dir
+    src_dir="$(dirname "${BUILD_OUTPUT}")"
 
-    # Copy .deb and metadata files to OUTPUT_DIR
-    cp "${BUILD_OUTPUT}/"../linux-*"${KERNEL_VERSION}"*.changes "${OUTPUT_DIR}/"
-    cp "${BUILD_OUTPUT}/"../linux-*"${KERNEL_VERSION}"*.buildinfo "${OUTPUT_DIR}/"
-    cp "${BUILD_OUTPUT}/"../linux-{headers,image}-"${KERNEL_VERSION}"*.deb "${OUTPUT_DIR}/"
-    cp "${BUILD_OUTPUT}/"../linux-libc-dev_"${KERNEL_VERSION}"*.deb "${OUTPUT_DIR}/"
-    cp "${BUILD_OUTPUT}/.config" "${OUTPUT_DIR}/config-${KERNEL_VERSION}"
+    local patterns=(
+        "linux-*${KERNEL_VERSION}*.changes"
+        "linux-*${KERNEL_VERSION}*.buildinfo"
+        "linux-headers-${KERNEL_VERSION}*.deb"
+        "linux-image-${KERNEL_VERSION}*.deb"
+        "linux-libc-dev_${KERNEL_VERSION}*.deb"
+    )
 
-    shopt -u nullglob
+    local pattern files=() missing=()
+    for pattern in "${patterns[@]}"; do
+        # compgen -G matches the glob and exits 1 (harmless inside process
+        # substitution) when nothing matches.
+        mapfile -t files < <(compgen -G "${src_dir}/${pattern}")
 
-    echo -e "${GREEN}Artifacts copied to ${OUTPUT_DIR}!${END_COLOR}"
+        if (( ${#files[@]} == 0 )); then
+            missing+=("${src_dir}/${pattern}")
+        else
+            cp -- "${files[@]}" "${OUTPUT_DIR}/"
+        fi
+    done
+
+    if (( ${#missing[@]} > 0 )); then
+        printf '%b\n' "${RED}Expected artifacts not found:${END_COLOR}" >&2
+        local entry
+        for entry in "${missing[@]}"; do
+            printf '  %s\n' "${entry}" >&2
+        done
+        exit 3
+    fi
+
+    cp -- "${BUILD_OUTPUT}/.config" "${OUTPUT_DIR}/config-${KERNEL_VERSION}"
+
+    printf '%b\n' "${GREEN}Artifacts copied to ${OUTPUT_DIR}!${END_COLOR}"
 }
 
 # Main function
@@ -180,7 +228,7 @@ main() {
                 exit 0
                 ;;
             *)
-                echo -e "${RED}Unknown option: $1${END_COLOR}"
+                printf '%b\n' "${RED}Unknown option: $1${END_COLOR}" >&2
                 print_help
                 exit 1
                 ;;
@@ -192,7 +240,7 @@ main() {
     build_kernel
     copy_artifacts
 
-    echo -e "${GREEN}Kernel build and copy complete!${END_COLOR}"
+    printf '%b\n' "${GREEN}Kernel build and copy complete!${END_COLOR}"
 }
 
 main "$@"
