@@ -167,7 +167,7 @@ build_kernel() {
     # Build the kernel and binary debian packages in a single pass.
     # .deb/.changes/.buildinfo files are written to the parent of
     # ${BUILD_OUTPUT}.
-    make CC=${CCACHE} -s -j"${CPUS}" bindeb-pkg
+    make CC="${CCACHE}" -s -j"${CPUS}" bindeb-pkg
 
     printf '%b\n' "${GREEN}Kernel build complete!${END_COLOR}"
 }
