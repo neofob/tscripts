@@ -21,6 +21,7 @@ UNWINDER_FRAME_POINTER=${UNWINDER_FRAME_POINTER:-"n"}
 KGDB=${KGDB:-"n"}
 KGDB_SERIAL_CONSOLE=${KGDB_SERIAL_CONSOLE:-"n"}
 SYSTEM_TRUSTED_KEYS=${SYSTEM_TRUSTED_KEYS:-""}
+CCACHE=${CCACHE:-"ccache gcc"}
 
 # Globals populated during execution
 KERNEL_VERSION=""
@@ -166,7 +167,7 @@ build_kernel() {
     # Build the kernel and binary debian packages in a single pass.
     # .deb/.changes/.buildinfo files are written to the parent of
     # ${BUILD_OUTPUT}.
-    make -s -j"${CPUS}" bindeb-pkg
+    make CCACHE=${CCACHE} -s -j"${CPUS}" bindeb-pkg
 
     printf '%b\n' "${GREEN}Kernel build complete!${END_COLOR}"
 }
