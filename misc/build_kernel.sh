@@ -76,7 +76,7 @@ print_help() {
 
 # Function to dump environment variables
 dump_vars() {
-    local VAR_LIST=("BUILD_OUTPUT" "ARTIFACT" "OLD_CONFIG" "KERNEL_SRC" "CPUS" "KERNEL_VERSION" "OUTPUT_DIR")
+    local VAR_LIST=("BUILD_OUTPUT" "ARTIFACT" "OLD_CONFIG" "KERNEL_SRC" "CPUS" "KERNEL_VERSION" "OUTPUT_DIR" "CCACHE")
     for var in "${VAR_LIST[@]}"; do
         # Use indirect expansion safely
         printf "%s=%s\n" "$var" "${!var:-}"
@@ -167,7 +167,7 @@ build_kernel() {
     # Build the kernel and binary debian packages in a single pass.
     # .deb/.changes/.buildinfo files are written to the parent of
     # ${BUILD_OUTPUT}.
-    make CCACHE=${CCACHE} -s -j"${CPUS}" bindeb-pkg
+    make CC=${CCACHE} -s -j"${CPUS}" bindeb-pkg
 
     printf '%b\n' "${GREEN}Kernel build complete!${END_COLOR}"
 }
